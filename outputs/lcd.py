@@ -1,6 +1,6 @@
+import grovepi
 import smbus
 import RPi.GPIO as GPIO
-
 
 class Lcd:
     def __init__(self):
@@ -16,17 +16,12 @@ class Lcd:
             self.bus = smbus.SMBus(0)
 
     def set_rgb(self, r, g, b):
-        bus.write_byte_data(self.rgbAddr, 0, 0)
-        bus.write_byte_data(self.rgbAddr, 1, 0)
-        bus.write_byte_data(self.rgbAddr, 0x08, 0xaa)
-        bus.write_byte_data(self.rgbAddr, 4, r)
-        bus.write_byte_data(self.rgbAddr, 3, g)
-        bus.write_byte_data(self.rgbAddr, 2, b)
-
-    
-    def set_rgb(self, new_power):
-        grovepi.analogWrite(self.port, new_power)
-        self.power = new_power
+        self.bus.write_byte_data(self.rgbAddr, 0, 0)
+        self.bus.write_byte_data(self.rgbAddr, 1, 0)
+        self.bus.write_byte_data(self.rgbAddr, 0x08, 0xaa)
+        self.bus.write_byte_data(self.rgbAddr, 4, r)
+        self.bus.write_byte_data(self.rgbAddr, 3, g)
+        self.bus.write_byte_data(self.rgbAddr, 2, b)
 
     def get_value(self):
         return grovepi.analogRead(self.port)

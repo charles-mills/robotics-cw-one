@@ -1,9 +1,9 @@
 import grovepi
 
 class Led:
-    def __init__(self, port):
+    def __init__(self, port: int) -> None:
         self.port = port
-        pinMode(self.port, "OUTPUT")
+        grovepi.pinMode(self.port, "OUTPUT")
     
-    def get_value(self):
+    def get_value(self) -> int :
         return grovepi.ultrasonicRead(self.port)

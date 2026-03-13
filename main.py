@@ -16,8 +16,8 @@ class Main:
         self.lcd = Lcd()
 
     def main(self):
-
-
+        pass
 
 if __name__ == "__main__":
-    pass
+    main = Main()
+    main.main()
