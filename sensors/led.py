@@ -5,5 +5,5 @@ class Led:
         self.port = port
         pinMode(self.port, "OUTPUT")
     
-    def getValue(self):
+    def get_value(self):
         return grovepi.ultrasonicRead(self.port)

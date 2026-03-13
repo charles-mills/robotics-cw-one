@@ -5,7 +5,7 @@ class Button:
         self.port = port
         grovepi.pinMode(self.port, "INPUT")
     
-    def getValue(self):
+    def get_value(self):
         return grovepi.digitalRead(self.port)
     
     def shutdown(self):

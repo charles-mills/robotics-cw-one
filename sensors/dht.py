@@ -6,6 +6,6 @@ class Dht:
         self.port = port
         self.type = 0
     
-    def getValue(self):
+    def get_value(self):
         # [temp, humidity] = grovepi.dht(self.port, type)
         return grovepi.dht(self.port, self.type)

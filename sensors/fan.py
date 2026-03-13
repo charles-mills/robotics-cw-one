@@ -6,11 +6,11 @@ class Fan:
         self.power = 0
         grovepi.pinMode(self.port, self.power)
     
-    def setValue(self, newPower):
-        grovepi.analogWrite(self.port, newPower)
-        self.power = newPower
+    def set_value(self, new_power):
+        grovepi.analogWrite(self.port, new_power)
+        self.power = new_power
 
-    def getValue(self):
+    def get_value(self):
         return grovepi.analogRead(self.port)
     
     def shutdown(self):
