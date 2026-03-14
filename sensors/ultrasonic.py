@@ -2,7 +2,7 @@ import grovepi
 import time
 
 class Ultrasonic:
-    def __init__(self, port) -> None:
+    def __init__(self, port: int) -> None:
         grovepi.set_bus("RPI_1")
         self.port : int = port
         self.baseline : float = 0
