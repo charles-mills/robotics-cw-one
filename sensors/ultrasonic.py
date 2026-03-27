@@ -6,6 +6,7 @@ class Ultrasonic:
         grovepi.set_bus("RPI_1")
         self.port : int = port
         self.baseline : float = 0
+        self.motionDetected: bool = False
 
     '''
     Establishes the average distance read by the sensor to establish a baseline
@@ -40,5 +41,14 @@ class Ultrasonic:
 
         return above > 1 # bad pls fix
 
-    def get_value(self):
+    def get_value(self) -> int:
         return grovepi.ultrasonicRead(self.port)
+    
+
+
+    def set_motion_detected(self, newMotionDetected : bool) -> None:
+        self.motionDetected = newMotionDetected
+
+    
+    def get_motion_detected(self) -> bool:
+        return self.motionDetected
