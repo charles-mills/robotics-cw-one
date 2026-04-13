@@ -13,7 +13,7 @@ class Lcd:
     def __init__(self) -> None:
         self.rgbAddr: int = 0x62
         self.txtAddr: int = 0x3e
-        self.lcd_state: LcdState = LcdState.OFF
+        self._lcd_state: LcdState = LcdState.OFF
 
         rev = GPIO.RPI_REVISION
 
@@ -38,8 +38,8 @@ class Lcd:
 
     @property
     def lcd_state(self) -> LcdState:
-        return self.lcd_state
+        return self._lcd_state
 
     @lcd_state.setter
     def lcd_state(self, new_state: LcdState) -> None:
-        self.lcd_state = new_state
+        self._lcd_state = new_state
