@@ -43,3 +43,13 @@ class Lcd:
     @lcd_state.setter
     def lcd_state(self, new_state: LcdState) -> None:
         self._lcd_state = new_state
+
+
+    
+    def cycle_states(self) -> None:
+        if self._lcd_state == LcdState.OFF:
+            self._lcd_state = LcdState.DASHBOARD
+        elif self.lcd_state == LcdState.DASHBOARD:
+            self._lcd_state = LcdState.SETTINGS
+        elif self._lcd_state == LcdState.SETTINGS:
+            self._lcd_state = LcdState.OFF
