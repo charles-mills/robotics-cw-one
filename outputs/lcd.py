@@ -4,21 +4,19 @@ import RPi.GPIO as GPIO
 from enum import Enum, auto
 
 
-class LcdStates(Enum):
+class LcdState(Enum):
     OFF = auto()
     SETTINGS = auto()
     DASHBOARD = auto()
 
-
 class Lcd:
     def __init__(self) -> None:
-        self.rgbAddr = 0x62
-        self.txtAddr = 0x3e
-        self.lcdState: LcdStates = LcdStates.OFF
+        self.rgbAddr: int = 0x62
+        self.txtAddr: int = 0x3e
+        self.lcd_state: LcdState = LcdState.OFF
 
         rev = GPIO.RPI_REVISION
-        print(f"DEBUG: {rev}")
-        
+
         if rev == 2 or rev == 3:
             self.bus = smbus.SMBus(1)
         else:
@@ -37,11 +35,11 @@ class Lcd:
     
     def shutdown(self) -> int:
         return grovepi.pinMode(self.port, "OUTPUT")
-    
 
-    def set_lcd_state(self, newLCDState : LcdStates) -> None:
-        self.lcdState = newLCDState
+    @property
+    def lcd_state(self) -> LcdState:
+        return self.lcd_state
 
-    def get_lcd_state(self) -> LcdStates:
-        return self.lcdState
-     
+    @lcd_state.setter
+    def lcd_state(self, new_state: LcdState) -> None:
+        self.lcd_state = new_state

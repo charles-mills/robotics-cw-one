@@ -11,19 +11,19 @@ class Dht:
     def get_value(self) -> tuple[float, float] :
         # [temp, humidity] = grovepi.dht(self.port, type)
         return grovepi.dht(self.port, self.type)
-    
 
-    def set_temp(self, newTempValue : float) -> None:
-        self.temp = newTempValue
-
-
-    def get_temp(self) -> float:
+    @property
+    def temp(self) -> float:
         return self.temp
-    
-    
-    def set_humidity(self, newHumidityValue : float) -> None:
-        self.humidity = newHumidityValue
 
-    
-    def get_humidity(self) -> float:
+    @property
+    def humidity(self) -> float:
         return self.humidity
+
+    @temp.setter
+    def temp(self, value: float) -> None:
+        self.temp = value
+
+    @humidity.setter
+    def humidity(self, value: float) -> None:
+        self.humidity = value
