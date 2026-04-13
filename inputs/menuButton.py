@@ -12,6 +12,14 @@ class MenuButton(Button):
     
     def check_and_cycle_states(self) -> None:
         
+        """
+        Establishes a connection between a button press and changing the lcd states (e.g. off, dashboard, settings)
+
+        Returns:
+            None
+    
+        """
+
         current_state: int = self.get_value()
 
         if current_state == 1 and self.button_last_state == 0:
