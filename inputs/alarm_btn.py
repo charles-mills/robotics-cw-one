@@ -1,7 +1,7 @@
 import grovepi
-from inputs.button import Button
+from inputs.base_btn import BaseButton
 
-class AlarmButton(Button):
+class AlarmButton(BaseButton):
 
     def __init__(self, port: int):
         super().__init__(port)

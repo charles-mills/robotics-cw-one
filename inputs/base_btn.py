@@ -1,6 +1,6 @@
 import grovepi
 
-class Button:
+class BaseButton:
     def __init__(self, port: int):
         self.port: int = port
         grovepi.pinMode(self.port, "INPUT")
