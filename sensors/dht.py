@@ -1,5 +1,6 @@
 import grovepi
 
+
 class Dht:
     def __init__(self, port: int):
         grovepi.set_bus("RPI_1")
@@ -7,8 +8,8 @@ class Dht:
         self.type: int = 0
         self._temp: float = 0
         self._humidity: float = 0
-    
-    def get_value(self) -> tuple[float, float] :
+
+    def get_value(self) -> tuple[float, float]:
         # [temp, humidity] = grovepi.dht(self.port, type)
         return grovepi.dht(self.port, self.type)
 

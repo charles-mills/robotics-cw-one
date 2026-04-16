@@ -1,7 +1,8 @@
 import time
 from sensors import Ultrasonic, Dht
-from inputs import Button, MenuButton, AlarmButton
+from inputs import BaseButton, MenuButton, AlarmButton
 from outputs import Led, Fan, Lcd
+
 
 class Main:
     def __init__(self):
@@ -12,23 +13,22 @@ class Main:
         self.lcd = Lcd()
         self.cycle_btn = MenuButton(5, self.lcd)
         self.trigger_btn = AlarmButton(6)
-        
-
 
     def main(self):
-        
-        while True:
+        self.ultrasonic.establish_baseline_distance()
 
+
+        while True:
             try:
                 self.cycle_btn.check_and_cycle_states()
 
                 self.trigger_btn.change_alarm_state()
 
-                motion_detected = self.ultrasonic.is_beyond_baseline_for_seconds()
+                motion_detected = self.ultrasonic.is_detected()
                 current_temp, current_humidity = self.dht.get_value()
 
                 self.dht.temp = current_temp
-                self.dht.humidity = current_humidity    
+                self.dht.humidity = current_humidity
 
                 high_temp: bool = current_temp > 28
                 high_humidity = current_humidity > 60
@@ -38,15 +38,8 @@ class Main:
                 self.led.light_state = motion_detected or high_climate
 
                 time.sleep(0.1)
-
             except IOError:
                 pass
-        
-        pass
-
-
-
-
 
 if __name__ == "__main__":
     main = Main()

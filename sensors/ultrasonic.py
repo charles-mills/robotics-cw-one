@@ -1,54 +1,67 @@
 import grovepi
 import time
+import statistics
+
 
 class Ultrasonic:
+    """
+    Initialises the Ultrasonic Ranger and processes its values.
+
+    """
+
     def __init__(self, port: int) -> None:
+        """
+        Assigns the sensor port use and initialises the GrovePi bus.
+
+        Args:
+            port: GrovePi port the sensor is connected to.
+
+        """
         grovepi.set_bus("RPI_1")
-        self.port : int = port
-        self.baseline : float = 0
-        self._motion_detected: bool = False
+        self.port: int = port
+        self.baseline: float = -1.0
 
-    '''
-    Establishes the average distance read by the sensor to establish a baseline
-    for detection of motion.
-    
-    TODO: Requires some kind of outlier detection since it can often happen with the ultrasonic.
-    '''
-    def establish_baseline_distance(self, seconds_to_read_for : int = 5) -> float:
-        distances : float = 0
+    def establish_baseline_distance(self, seconds_to_read_for: float = 5.0) -> bool:
+        """
+        Establishes the median distance read by the ultrasonic ranger to establish a baseline for motion detection.
 
-        for s in range(0, seconds_to_read_for):
-            distances += grovepi.ultrasonicRead(self.port)
-            time.sleep(1) # replace !!
+        Args:
+            seconds_to_read_for: Number of seconds to sample for a baseline reading.
 
-        return distances / seconds_to_read_for
+        Returns: True on assignment of the baseline to self.baseline.
 
-    def is_beyond_baseline_for_seconds(self, seconds_to_detect : float = 0.1) -> bool:
-        if self.baseline == 0:
-            print("Baseline has not been configured or is 0.")
-            return False
+        """
+        readings: list[int] = []
+        end_time: float = time.monotonic() + seconds_to_read_for
 
-        interval = max(seconds_to_detect / 10, 0.1)
-        above = 0
+        pause_time: float = 0.1
+        """
+        Should be at least 0.1 seconds based on the example at:
+        https://wiki.seeedstudio.com/Grove_-_Ultrasonic_Ranger
+        
+        'don't overload the i2c bus'
+         
+        """
 
-        for s in range(0, 10):
-            grovepi.ultrasonicRead(self.port)
+        while time.monotonic() < end_time:
+            readings.append(grovepi.ultrasonicRead(self.port))
+            time.sleep(pause_time)
 
-            if grovepi.ultrasonicRead(self.port) < self.baseline:
-                above += 1
-
-            time.sleep(interval)
-
-        return above > 1 # bad pls fix
+        self.baseline = statistics.median(readings)
+        return True
 
     def get_value(self) -> int:
+        """
+
+        Returns: The raw value reading from the ultrasonic ranger.
+
+        """
         return grovepi.ultrasonicRead(self.port)
 
-    @property
-    def motion_detected(self) -> bool:
-        return self._motion_detected
+    def is_detected(self) -> bool:
+        """
 
-    @motion_detected.setter
-    def motion_detected(self, value: bool) -> None:
-        self._motion_detected = value
+        Returns: True if the reading of the ultrasonic ranger is below the established baseline, False otherwise.
 
+        """
+        return self.get_value() < self.baseline

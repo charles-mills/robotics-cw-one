@@ -1,8 +1,8 @@
 import grovepi
-from inputs.button import Button 
+from inputs.base_btn import BaseButton
 from outputs.lcd import Lcd
 
-class MenuButton(Button):
+class MenuButton(BaseButton):
 
     def __init__(self, port: int, display: Lcd):
         super().__init__(port) 
