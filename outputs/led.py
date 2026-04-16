@@ -13,9 +13,8 @@ class Led:
         self.port: int = port
         grovepi.pinMode(self.port, "OUTPUT")
         self._light_state: bool = False
+        grovepi.digitalWrite(self.port, 0)
     
-    def get_value(self) -> int :
-        return grovepi.ultrasonicRead(self.port)
 
     @property
     def light_state(self) -> bool:
