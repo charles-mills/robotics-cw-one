@@ -33,7 +33,15 @@ class Ultrasonic:
         """
         readings: list[int] = []
         end_time: float = time.monotonic() + seconds_to_read_for
-        pause_time: float = 0.05
+
+        pause_time: float = 0.1
+        """
+        Should be at least 0.1 seconds based on the example at:
+        https://wiki.seeedstudio.com/Grove_-_Ultrasonic_Ranger
+        
+        'don't overload the i2c bus'
+         
+        """
 
         while time.monotonic() < end_time:
             readings.append(grovepi.ultrasonicRead(self.port))
