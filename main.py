@@ -2,6 +2,7 @@ from sensors import Ultrasonic, Dht
 from inputs import BaseButton
 from outputs import Led, Fan, Lcd
 
+
 class Main:
     def __init__(self):
         self.ultrasonic = Ultrasonic(1)
@@ -14,6 +15,7 @@ class Main:
 
     def main(self):
         pass
+
 
 if __name__ == "__main__":
     main = Main()
