@@ -1,5 +1,5 @@
-import grovepi
 from inputs.base_btn import BaseButton
+
 
 class AlarmButton(BaseButton):
 
@@ -9,7 +9,6 @@ class AlarmButton(BaseButton):
         self.button_last_state: int = 0
 
     def change_alarm_state(self) -> None:
-
         """
         Establishes a connection between a button press and the alarm being turend on or off.
 
@@ -27,7 +26,6 @@ class AlarmButton(BaseButton):
 
     @property
     def alarm_state(self) -> bool:
-        
         """
         Returns the current state of the alarm.
 
@@ -35,5 +33,5 @@ class AlarmButton(BaseButton):
             bool
 
         """
-        
+
         return self.is_alarm_on

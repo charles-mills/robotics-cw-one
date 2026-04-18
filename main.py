@@ -1,7 +1,8 @@
 import time
-from sensors import Ultrasonic, Dht
-from inputs import BaseButton, MenuButton, AlarmButton
+
+from inputs import MenuButton, AlarmButton
 from outputs import Led, Fan, Lcd
+from sensors import Ultrasonic, Dht
 
 
 class Main:
@@ -16,7 +17,6 @@ class Main:
 
     def main(self):
         self.ultrasonic.establish_baseline_distance()
-
 
         while True:
             try:
@@ -39,7 +39,8 @@ class Main:
 
                 time.sleep(0.1)
             except IOError:
-                pass
+                print("IOError")
+
 
 if __name__ == "__main__":
     main = Main()

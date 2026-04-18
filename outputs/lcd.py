@@ -1,13 +1,15 @@
+from enum import Enum, auto
+
+import RPi.GPIO as GPIO
 import grovepi
 import smbus
-import RPi.GPIO as GPIO
-from enum import Enum, auto
 
 
 class LcdState(Enum):
     OFF = auto()
     SETTINGS = auto()
     DASHBOARD = auto()
+
 
 class Lcd:
     def __init__(self) -> None:
@@ -32,7 +34,7 @@ class Lcd:
 
     def get_value(self) -> int:
         return grovepi.analogRead(self.port)
-    
+
     def shutdown(self) -> int:
         return grovepi.pinMode(self.port, "OUTPUT")
 
@@ -44,8 +46,6 @@ class Lcd:
     def lcd_state(self, new_state: LcdState) -> None:
         self._lcd_state = new_state
 
-
-    
     def cycle_states(self) -> None:
         if self._lcd_state == LcdState.OFF:
             self._lcd_state = LcdState.DASHBOARD

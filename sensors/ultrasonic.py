@@ -1,6 +1,7 @@
-import grovepi
-import time
 import statistics
+import time
+
+import grovepi
 
 
 class Ultrasonic:
