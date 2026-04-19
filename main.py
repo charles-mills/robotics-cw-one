@@ -26,12 +26,10 @@ class Main:
 
                 if self.lcd.lcd_state == LcdState.SETTINGS: 
                     if rotation_value == 1:
-                        # scroll down in settings
-                        pass
+                        self.lcd.next_setting()
                     elif rotation_value == -1:
-                        # scroll up in settings
-                        pass
-                    
+                        self.lcd.previous_setting()
+
                 self.cycle_btn.check_and_cycle_states()
 
                 self.trigger_btn.change_alarm_state()
