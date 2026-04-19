@@ -6,7 +6,6 @@ import smbus
 
 
 class LcdState(Enum):
-    OFF = auto()
     SETTINGS = auto()
     DASHBOARD = auto()
 
@@ -47,9 +46,7 @@ class Lcd:
         self._lcd_state = new_state
 
     def cycle_states(self) -> None:
-        if self._lcd_state == LcdState.OFF:
-            self._lcd_state = LcdState.DASHBOARD
-        elif self.lcd_state == LcdState.DASHBOARD:
+        if self.lcd_state == LcdState.DASHBOARD:
             self._lcd_state = LcdState.SETTINGS
         elif self._lcd_state == LcdState.SETTINGS:
-            self._lcd_state = LcdState.OFF
+            self._lcd_state = LcdState.DASHBOARD

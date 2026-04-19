@@ -1,7 +1,7 @@
 import time
 
-from inputs import MenuButton, AlarmButton
-from outputs import Led, Fan, Lcd
+from inputs import MenuButton, AlarmButton, SettingsDial
+from outputs import Led, Fan, Lcd, LcdState
 from sensors import Ultrasonic, Dht
 
 
@@ -14,12 +14,24 @@ class Main:
         self.lcd = Lcd()
         self.cycle_btn = MenuButton(5, self.lcd)
         self.trigger_btn = AlarmButton(6)
+        self.settings_dial = SettingsDial()
 
     def main(self):
         self.ultrasonic.establish_baseline_distance()
 
         while True:
             try:
+
+                rotation_value = self.settings_dial.get_rotation()
+
+                if self.lcd.lcd_state == LcdState.SETTINGS: 
+                    if rotation_value == 1:
+                        # scroll down in settings
+                        pass
+                    elif rotation_value == -1:
+                        # scroll up in settings
+                        pass
+                    
                 self.cycle_btn.check_and_cycle_states()
 
                 self.trigger_btn.change_alarm_state()
