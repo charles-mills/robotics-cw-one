@@ -13,8 +13,8 @@ class Main:
         self.led = Led(3)
         self.fan = Fan(4)
         self.lcd = Lcd()
-        self.cycle_btn = SelectButton(5, self.lcd)
-        self.trigger_btn = CycleButton(6)
+        self.select_btn = SelectButton(5, self.lcd)
+        self.cycle_btn = CycleButton(6, self.lcd)
         self.settings_dial = SettingsDial()
         self.alert_manager = AlertManager()
 
@@ -37,9 +37,8 @@ class Main:
 
                     self.lcd.render_settings_option()
 
-                self.cycle_btn.check_and_cycle_states()
-
-                self.trigger_btn.change_alarm_state()
+                self.cycle_btn.tick()
+                self.select_btn.tick()
 
                 motion_detected = self.ultrasonic.is_detected()
 
@@ -58,14 +57,9 @@ class Main:
                 else:
                     self.alert_manager.auto_resolve_alert(alert_type=AlertType.HIGH_HUM)
                 if motion_detected:
-                    self.alert_manager.trigger_alert(alert_typep=AlertType.MOTION, message="Motion detected")
+                    self.alert_manager.trigger_alert(alert_type=AlertType.MOTION, message="Motion detected")
                 else:
                     self.alert_manager.auto_resolve_alert(alert_type=AlertType.MOTION)
-
-
-                self.cycle_btn.check_and_cycle_states()
-                self.trigger_btn.change_alarm_state()
-
 
                 high_climate: bool = high_temp and high_humidity
                 self.led.led_on = motion_detected or high_climate

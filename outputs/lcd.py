@@ -143,8 +143,6 @@ class Lcd:
         display_string: str = f"> {current_option_name} \n {next_option_name}"
         self.text_norefresh(display_string)
 
-
-
     @property
     def lcd_state(self) -> LcdState:
         return self._lcd_state
@@ -159,6 +157,8 @@ class Lcd:
         elif self._lcd_state == LcdState.SETTINGS:
             self._lcd_state = LcdState.DASHBOARD
 
+    def select(self) -> None:
+        pass
 
     def next_setting(self) -> None:
         self._current_option_index = (self._current_option_index + 1) % len(self._current_settings_option)
