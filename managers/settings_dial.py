@@ -19,7 +19,7 @@ class SettingsDial:
         if current_position > self.last_position :
             rotation_value = 1
         elif current_position < self.last_position:
-            rotation = -1
+            rotation_value = -1
 
         self.last_position = current_position
 

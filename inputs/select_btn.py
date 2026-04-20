@@ -2,7 +2,7 @@ from inputs.base_btn import BaseButton
 from outputs.lcd import Lcd
 
 
-class MenuButton(BaseButton):
+class SelectButton(BaseButton):
 
     def __init__(self, port: int, display: Lcd):
         super().__init__(port)

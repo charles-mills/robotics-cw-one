@@ -28,3 +28,9 @@ def pinMode(pin, mode):
 
 def dht(pin, module_type):
     return [0.0, 0.0]
+
+def encoder_en():
+    pass
+
+def encoderRead():
+    pass
