@@ -24,6 +24,10 @@ class Main:
 
                 rotation_value = self.settings_dial.get_rotation()
 
+
+                if self.lcd.lcd_state == LcdState.DASHBOARD:
+                    self.lcd.render_dashboard(current_temp, current_humidity, 0)
+
                 if self.lcd.lcd_state == LcdState.SETTINGS: 
                     if rotation_value == 1:
                         self.lcd.next_setting()

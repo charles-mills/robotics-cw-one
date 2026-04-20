@@ -1,3 +1,5 @@
+import time
+
 from enum import Enum, auto
 
 import RPi.GPIO as GPIO
@@ -43,6 +45,85 @@ class Lcd:
 
     # def shutdown(self) -> int:
     #     return grovepi.pinMode(self.port, "OUTPUT")
+
+    def text_command(self, cmd: int) -> None:
+        """
+        Sends a instruction to the screen.
+
+        Args:
+            cmd (int): The hexadecimal command code that needs to be executed.
+        
+        Returns:
+            None
+        """
+        self.bus.write_byte_data(self.txtADDR, 0x80, cmd)
+
+    def text_norefresh(self, text: str) -> None:
+        """
+        Writes a string to the LCD without clearing the screen
+        which prevents the screen from flickering when updating.
+
+        Args:
+            text (str): The string that needs to be displayed to the screen.
+
+        Returns:
+            None
+        """
+        
+        self.text_command(0x02)
+        time.sleep(0.05)
+        self.text_command(0x08 | 0x04)
+        self.text_command(0x28)
+        time.sleep(0.05)
+
+        count: int = 0
+        row: int = 0
+
+        while len(text) < 32:
+            text += ' '
+
+        for c in text:
+            if c == '\n' or count == 16:
+                count = 0
+
+                row += 1
+
+                if row == 2:
+                    break
+
+                self.text_command(0xc0)
+
+                if c == '\n':
+                    continue
+            
+            count += 1
+            self.bus.write_byte_data(self.txtAddr, 0x40, ord(c))
+
+
+    def render_dashboard(self, temp: float, humidity: float, alerts: int) -> None:
+        """
+        Formats and displays the different components in the dashboard. 
+
+        Args:
+            temp (float): The current temperature.
+            humidity (float): The current humidity.
+            alerts (int): The number of active alerts.
+        """
+        
+        if alerts == 0:
+            status_text: str = "No alerts"
+            self.set_rgb(0, 255, 0)
+        else:
+            status_text: str = f"Alerts: {alerts}"
+            self.set_rgb(255, 0, 0)
+
+        display_string: str = f"{status_text} \n Temp:{temp:.1f}C Hum:{humidity:.0f}%"
+        self.text_norefresh(display_string)
+
+
+
+    
+
 
     @property
     def lcd_state(self) -> LcdState:
