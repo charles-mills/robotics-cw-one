@@ -1,7 +1,7 @@
 from inputs.base_btn import BaseButton
 
 
-class AlarmButton(BaseButton):
+class CycleButton(BaseButton):
 
     def __init__(self, port: int):
         super().__init__(port)
