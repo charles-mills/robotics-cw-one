@@ -1,2 +1,2 @@
 from .settings_dial import SettingsDial
-from .alartManager import AlertManager, AlertType
+from .alert_manager import AlertManager, AlertType
