@@ -1,7 +1,7 @@
 import time
 
 from inputs import MenuButton, AlarmButton, SettingsDial
-from outputs import Led, Fan, Lcd, LcdState
+from outputs import Led, Fan, Lcd, LcdState, AlertManager, AlertType
 from sensors import Ultrasonic, Dht
 
 
@@ -15,6 +15,7 @@ class Main:
         self.cycle_btn = MenuButton(5, self.lcd)
         self.trigger_btn = AlarmButton(6)
         self.settings_dial = SettingsDial()
+        self.alert_manager = AlertManager()
 
     def main(self):
         self.ultrasonic.establish_baseline_distance()
@@ -23,23 +24,6 @@ class Main:
             try:
 
                 rotation_value = self.settings_dial.get_rotation()
-
-
-                if self.lcd.lcd_state == LcdState.DASHBOARD:
-                    self.lcd.render_dashboard(current_temp, current_humidity, 0)
-
-                if self.lcd.lcd_state == LcdState.SETTINGS: 
-                    if rotation_value == 1:
-                        self.lcd.next_setting()
-                    elif rotation_value == -1:
-                        self.lcd.previous_setting()
-
-                    self.lcd.render_settings_option()
-
-                self.cycle_btn.check_and_cycle_states()
-
-                self.trigger_btn.change_alarm_state()
-
                 motion_detected = self.ultrasonic.is_detected()
                 current_temp, current_humidity = self.dht.get_value()
 
@@ -49,11 +33,42 @@ class Main:
                 high_temp: bool = current_temp > 28
                 high_humidity = current_humidity > 60
 
-                high_climate: bool = high_temp and high_humidity
+                if high_temp:
+                    self.alert_manager.trigger_alert(alert_type=AlertType.HIGH_TEMP, message="Temp warning")
+                else:
+                    self.alert_manager.auto_resolve_alert(alert_type=AlertType.HIGH_TEMP)
+                if high_humidity:
+                    self.alert_manager.trigger_alert(alert_type=AlertType.HIGH_HUM, message="Humidity warning")
+                else:
+                    self.alert_manager.auto_resolve_alert(alert_type=AlertType.HIGH_HUM)
+                if motion_detected:
+                    self.alert_manager.trigger_alert(alert_typep=AlertType.MOTION, message="Motion detected")
+                else:
+                    self.alert_manager.auto_resolve_alert(alert_type=AlertType.MOTION)
 
+
+                if self.lcd.lcd_state == LcdState.DASHBOARD:
+                    self.lcd.render_dashboard(current_temp, current_humidity, self.alert_manager.total_alert)
+
+                if self.lcd.lcd_state == LcdState.SETTINGS: 
+                    if rotation_value == 1:
+                        self.lcd.next_setting()
+                    elif rotation_value == -1:
+                        self.lcd.previous_setting()
+
+                    self.lcd.render_settings_option()
+
+
+                self.cycle_btn.check_and_cycle_states()
+                self.trigger_btn.change_alarm_state()
+
+
+                high_climate: bool = high_temp and high_humidity
                 self.led.light_state = motion_detected or high_climate
 
+
                 time.sleep(0.1)
+
             except IOError:
                 print("IOError")
 
