@@ -68,6 +68,8 @@ class Main:
 
             except IOError:
                 print("IOError")
+            except KeyboardInterrupt:
+                pass
 
 
 if __name__ == "__main__":
