@@ -1,6 +1,7 @@
 from inputs.base_btn import BaseButton
 from outputs import Lcd
 
+
 class CycleButton(BaseButton):
 
     def __init__(self, port: int, display: Lcd):

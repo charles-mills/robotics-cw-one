@@ -1,13 +1,13 @@
 import time
-from enum import Enum, auto
 from dataclasses import dataclass
+from enum import Enum, auto
 
 
 class AlertType(Enum):
     MOTION = auto()
     HIGH_TEMP = auto()
     HIGH_HUM = auto()
-     
+
 
 @dataclass
 class Alert:
@@ -15,12 +15,12 @@ class Alert:
     message: str
     timestamp: float = time.time()
 
+
 class AlertManager:
-    
+
     def __init__(self):
         self._active_alerts: list[Alert] = []
 
-    
     def trigger_alert(self, alert_type: AlertType, message: str) -> None:
         """
         Inserts a new alert into the list of active alerts.
@@ -34,10 +34,9 @@ class AlertManager:
         for alert in self._active_alerts:
             if alert.alert_type == alert_type:
                 return
-            
+
         new_alert = Alert(alert_type, message)
         self._active_alerts.insert(0, new_alert)
-
 
     def auto_resolve_alert(self, alert_type: AlertType) -> None:
         """ 
@@ -49,16 +48,19 @@ class AlertManager:
 
         self._active_alerts = [i for i in self._active_alerts if i.alert_type != alert_type]
 
-
     @property
-    def current_alert(self) -> Alert:
-
+    def current_alert(self) -> Alert | None:
         if self._active_alerts:
             return self._active_alerts[0]
-        
+
         return None
 
-
-    @property 
+    @property
     def total_alert(self) -> int:
         return len(self._active_alerts)
+
+    def has_alert_type(self, alert_type: AlertType) -> bool:
+        for alert in self._active_alerts:
+            if alert.alert_type == alert_type:
+                return True
+        return False

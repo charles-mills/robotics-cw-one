@@ -6,7 +6,7 @@ def ultrasonicRead(pin):
     return 0
 
 
-def analogWrite(pin):
+def analogWrite(pin, value):
     return 0
 
 
@@ -33,8 +33,10 @@ def dht(pin, module_type):
 def encoder_en():
     pass
 
+
 def encoderRead():
     return 0
+
 
 def encoder_dis():
     pass

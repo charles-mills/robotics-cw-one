@@ -1,28 +1,34 @@
 import time
-
 from enum import Enum, auto
 
 import RPi.GPIO as GPIO
-import grovepi
 import smbus
+from managers import AlertManager, SettingsDial
+from sensors import Dht
 
 
 class LcdState(Enum):
     SETTINGS = auto()
     DASHBOARD = auto()
 
+
 class SettingsOption(Enum):
     OPTION1 = auto()
     OPTION2 = auto()
     OPTION3 = auto()
 
+
 class Lcd:
-    def __init__(self) -> None:
+    def __init__(self, alert_manager: AlertManager, dht: Dht, settings_dial: SettingsDial) -> None:
         self.rgbAddr: int = 0x62
         self.txtAddr: int = 0x3e
         self._lcd_state: LcdState = LcdState.DASHBOARD
         self._current_settings_option: list[SettingsOption] = list(SettingsOption)
         self._current_option_index: int = 0
+
+        self.alert_manager: AlertManager = alert_manager
+        self.dht: Dht = dht
+        self.settings_dial: SettingsDial = settings_dial
 
         rev = GPIO.RPI_REVISION
 
@@ -69,7 +75,7 @@ class Lcd:
         Returns:
             None
         """
-        
+
         self.text_command(0x02)
         time.sleep(0.05)
         self.text_command(0x08 | 0x04)
@@ -95,10 +101,9 @@ class Lcd:
 
                 if c == '\n':
                     continue
-            
+
             count += 1
             self.bus.write_byte_data(self.txtAddr, 0x40, ord(c))
-
 
     def render_dashboard(self, temp: float, humidity: float, alerts: int) -> None:
         """
@@ -112,7 +117,7 @@ class Lcd:
         Returns:
             None
         """
-        
+
         if alerts == 0:
             status_text: str = "No alerts"
             self.set_rgb(0, 255, 0)
@@ -122,7 +127,6 @@ class Lcd:
 
         display_string: str = f"{status_text} \n Temp:{temp:.1f}C Hum:{humidity:.0f}%"
         self.text_norefresh(display_string)
-
 
     def render_settings_option(self) -> None:
         """
@@ -160,14 +164,27 @@ class Lcd:
     def select(self) -> None:
         pass
 
+    def tick(self):
+        if self.lcd_state == LcdState.DASHBOARD:
+            # Should we be using parameters here? It's all internal
+            self.render_dashboard(self.dht.temp, self.dht.humidity, self.alert_manager.total_alert)
+
+        if self.lcd_state == LcdState.SETTINGS:
+            rotation_value: int = self.settings_dial.get_rotation()
+
+            if rotation_value == 1:
+                self.next_setting()
+            elif rotation_value == -1:
+                self.previous_setting()
+
+            self.render_settings_option()
+
     def next_setting(self) -> None:
         self._current_option_index = (self._current_option_index + 1) % len(self._current_settings_option)
 
-    
     def previous_setting(self) -> None:
         self._current_option_index = (self._current_option_index - 1) % len(self._current_settings_option)
 
-    
     @property
     def current_settings_option(self) -> SettingsOption:
         return self._current_settings_option[self._current_option_index]

@@ -2,6 +2,7 @@ import statistics
 import time
 
 import grovepi
+from managers import AlertManager, AlertType
 
 
 class Ultrasonic:
@@ -10,7 +11,7 @@ class Ultrasonic:
 
     """
 
-    def __init__(self, port: int) -> None:
+    def __init__(self, port: int, alert_manager: AlertManager) -> None:
         """
         Assigns the sensor port use and initialises the GrovePi bus.
 
@@ -21,6 +22,7 @@ class Ultrasonic:
         grovepi.set_bus("RPI_1")
         self.port: int = port
         self.baseline: float = -1.0
+        self.alert_manager: AlertManager = alert_manager
 
     def establish_baseline_distance(self, seconds_to_read_for: float = 5.0) -> bool:
         """
@@ -66,3 +68,7 @@ class Ultrasonic:
 
         """
         return self.get_value() < self.baseline
+
+    def tick(self) -> None:
+        if self.is_detected():
+            self.alert_manager.trigger_alert(AlertType.MOTION, "Motion detected")
