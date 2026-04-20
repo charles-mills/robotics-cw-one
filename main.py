@@ -34,6 +34,8 @@ class Main:
                     elif rotation_value == -1:
                         self.lcd.previous_setting()
 
+                    self.lcd.render_settings_option()
+
                 self.cycle_btn.check_and_cycle_states()
 
                 self.trigger_btn.change_alarm_state()

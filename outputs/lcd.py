@@ -56,7 +56,7 @@ class Lcd:
         Returns:
             None
         """
-        self.bus.write_byte_data(self.txtADDR, 0x80, cmd)
+        self.bus.write_byte_data(self.txtAddr, 0x80, cmd)
 
     def text_norefresh(self, text: str) -> None:
         """
@@ -108,6 +108,9 @@ class Lcd:
             temp (float): The current temperature.
             humidity (float): The current humidity.
             alerts (int): The number of active alerts.
+
+        Returns:
+            None
         """
         
         if alerts == 0:
@@ -121,8 +124,25 @@ class Lcd:
         self.text_norefresh(display_string)
 
 
+    def render_settings_option(self) -> None:
+        """
+        Formats the settings options where it renders a 2 scrolling settings menu.
+        The currently selected option is the top row
 
-    
+        Returns:
+            None
+        """
+
+        current_option_name: str = self.current_settings_option.name
+
+        next_option_index: int = (self._current_option_index + 1) % len(self._current_settings_option)
+        next_option_name: str = self._current_settings_option[next_option_index].name
+
+        self.set_rgb(0, 0, 255)
+
+        display_string: str = f"> {current_option_name} \n {next_option_name}"
+        self.text_norefresh(display_string)
+
 
 
     @property
