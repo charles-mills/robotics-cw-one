@@ -2,6 +2,7 @@ import time
 from enum import Enum, auto
 
 import RPi.GPIO as GPIO
+from managers.alert_manager import Alert, AlertType
 import smbus
 from managers import AlertManager, SettingsDial
 from sensors import Dht
@@ -10,6 +11,7 @@ from sensors import Dht
 class LcdState(Enum):
     SETTINGS = auto()
     DASHBOARD = auto()
+    ALERT = auto()
 
 
 class SettingsOption(Enum):
@@ -23,6 +25,7 @@ class Lcd:
         self.rgbAddr: int = 0x62
         self.txtAddr: int = 0x3e
         self._lcd_state: LcdState = LcdState.DASHBOARD
+        self.lcd_state_timer: int = 4
         self._current_settings_option: list[SettingsOption] = list(SettingsOption)
         self._current_option_index: int = 0
 
@@ -147,6 +150,23 @@ class Lcd:
         display_string: str = f"> {current_option_name} \n {next_option_name}"
         self.text_norefresh(display_string)
 
+    def render_alert_notification(self, alert : Alert) -> None:
+        """
+        Formats and displays the given alerts caught by the alert managerin the dashboard.
+
+        Args:
+            alert (Alert): the alert to be displayed
+
+        Returns:
+            None
+        """
+
+        self.set_rgb(0, 0, 255)
+
+        display_string: str = f"{alert.alert_type}: {alert.timestamp} \n{alert.message}%"
+        self.text_norefresh(display_string)
+
+
     @property
     def lcd_state(self) -> LcdState:
         return self._lcd_state
@@ -162,22 +182,36 @@ class Lcd:
             self._lcd_state = LcdState.DASHBOARD
 
     def select(self) -> None:
-        pass
+        if self._lcd_state == LcdState.ALERT:
+            if self.alert_manager.current_alert == AlertType.MOTION:
+                self.alert_manager.auto_resolve_alert(AlertType.MOTION)
 
     def tick(self):
-        if self.lcd_state == LcdState.DASHBOARD:
-            # Should we be using parameters here? It's all internal
-            self.render_dashboard(self.dht.temp, self.dht.humidity, self.alert_manager.total_alert)
+        if len(self.alert_manager._active_alerts) == 0:
+            if self.lcd_state == LcdState.DASHBOARD:
+                self.lcd_state_timer = 4
+                # Should we be using parameters here? It's all internal
+                self.render_dashboard(self.dht.temp, self.dht.humidity, self.alert_manager.total_alert)
 
-        if self.lcd_state == LcdState.SETTINGS:
-            rotation_value: int = self.settings_dial.get_rotation()
+            elif self.lcd_state == LcdState.SETTINGS:
+                if self.lcd_state_timer > 0:
+                    self.lcd_state_timer = self.lcd_state_timer - 1
+                else:
+                    self.lcd_state_timer = 4
+                    rotation_value: int = self.settings_dial.get_rotation()
 
-            if rotation_value == 1:
-                self.next_setting()
-            elif rotation_value == -1:
-                self.previous_setting()
+                    if rotation_value == 1:
+                        self.next_setting()
+                    elif rotation_value == -1:
+                        self.previous_setting()
 
-            self.render_settings_option()
+                    self.render_settings_option()
+
+            elif self.lcd_state == LcdState.ALERT:
+                self.lcd_state = LcdState.DASHBOARD
+        else:
+            self.alert_manager.try_resolve_alerts()
+            self.render_alert_notification(self.alert_manager.current_alert)
 
     def next_setting(self) -> None:
         self._current_option_index = (self._current_option_index + 1) % len(self._current_settings_option)
