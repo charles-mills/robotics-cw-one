@@ -108,7 +108,7 @@ class Lcd:
             count += 1
             self.bus.write_byte_data(self.txtAddr, 0x40, ord(c))
 
-    def render_dashboard(self, temp: float, humidity: float, alerts: int) -> None:
+    def render_dashboard(self, temp: float, humidity: float) -> None:
         """
         Formats and displays the different components in the dashboard. 
 
@@ -121,14 +121,7 @@ class Lcd:
             None
         """
 
-        if alerts == 0:
-            status_text: str = "No alerts"
-            self.set_rgb(0, 255, 0)
-        else:
-            status_text: str = f"Alerts: {alerts}"
-            self.set_rgb(255, 0, 0)
-
-        display_string: str = f"{status_text} \n Temp:{temp:.1f}C Hum:{humidity:.0f}%"
+        display_string: str = f"Temp:{temp:.1f}C Hum:{humidity:.0f}%"
         self.text_norefresh(display_string)
 
     def render_settings_option(self) -> None:
@@ -161,9 +154,9 @@ class Lcd:
             None
         """
 
-        self.set_rgb(0, 0, 255)
+        self.set_rgb(255, 0, 0)
 
-        display_string: str = f"{alert.alert_type}: {alert.timestamp} \n{alert.message}%"
+        display_string: str = f"{alert.alert_type.name}: {alert.timestamp} \n{alert.message}"
         self.text_norefresh(display_string)
 
     @property
@@ -181,16 +174,19 @@ class Lcd:
             self._lcd_state = LcdState.DASHBOARD
 
     def select(self) -> None:
-        if self._lcd_state == LcdState.ALERT:
-            if self.alert_manager.current_alert == AlertType.MOTION:
-                self.alert_manager.auto_resolve_alert(AlertType.MOTION)
+
+        if self.alert_manager.total_alert > 0:
+            self.alert_manager.dismiss_alert()
+        elif self._lcd_state == LcdState.SETTINGS:
+            pass
+
 
     def tick(self):
         if len(self.alert_manager._active_alerts) == 0:
             if self.lcd_state == LcdState.DASHBOARD:
                 self.lcd_state_timer = 4
                 # Should we be using parameters here? It's all internal
-                self.render_dashboard(self.dht.temp, self.dht.humidity, self.alert_manager.total_alert)
+                self.render_dashboard(self.dht.temp, self.dht.humidity)
 
             elif self.lcd_state == LcdState.SETTINGS:
                 if self.lcd_state_timer > 0:

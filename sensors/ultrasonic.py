@@ -71,4 +71,4 @@ class Ultrasonic:
 
     def tick(self) -> None:
         if self.is_detected():
-            self.alert_manager.trigger_alert(AlertType.MOTION, "Motion detected")
+            self.alert_manager.trigger_alert(AlertType.MOTION, "Motion detected", True)

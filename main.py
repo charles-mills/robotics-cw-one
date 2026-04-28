@@ -3,7 +3,7 @@ import traceback
 
 from inputs import SelectButton, CycleButton
 from managers import SettingsDial, AlertManager
-from outputs import Led, Fan, Lcd
+from outputs import Led, Fan, Lcd, Buzzer
 from sensors import Ultrasonic, Dht
 
 
@@ -20,8 +20,9 @@ class Main:
         self.lcd = Lcd(self.alert_manager, self.dht, self.settings_dial)
         self.select_btn = SelectButton(5, self.lcd)
         self.cycle_btn = CycleButton(6, self.lcd)
+        self.buzzer = Buzzer(7, self.alert_manager)
 
-        self.components = [self.ultrasonic, self.dht, self.cycle_btn, self.select_btn, self.led, self.fan, self.lcd]
+        self.components = [self.ultrasonic, self.dht, self.cycle_btn, self.select_btn, self.led, self.fan, self.lcd, self.buzzer]
 
     def main(self):
         self.ultrasonic.establish_baseline_distance()

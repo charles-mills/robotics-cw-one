@@ -39,12 +39,12 @@ class Dht:
             self._using_last_temp = False
 
         if self._temp > HIGH_TEMP_C:
-            self.alert_manager.trigger_alert(AlertType.HIGH_TEMP, "Temp warning")
+            self.alert_manager.trigger_alert(AlertType.HIGH_TEMP, "Temp warning", False)
         else:
             self.alert_manager.auto_resolve_alert(AlertType.HIGH_TEMP)
 
         if self._humidity > HIGH_HUMIDITY_PERCENT:
-            self.alert_manager.trigger_alert(AlertType.HIGH_HUM, "Humidity warning")
+            self.alert_manager.trigger_alert(AlertType.HIGH_HUM, "Humidity warning", False)
         else:
             self.alert_manager.auto_resolve_alert(AlertType.HIGH_HUM)
 
