@@ -28,6 +28,7 @@ class Lcd:
         self.lcd_state_timer: int = 4
         self._current_settings_option: list[SettingsOption] = list(SettingsOption)
         self._current_option_index: int = 0
+        self._current_string_depth: int = 0
 
         self.alert_manager: AlertManager = alert_manager
         self.dht: Dht = dht
@@ -156,8 +157,18 @@ class Lcd:
 
         self.set_rgb(255, 0, 0)
 
-        display_string: str = f"{alert.alert_type.name}: {alert.timestamp} \n{alert.message}"
+        display_string: str = f"{alert.alert_type.name}: {alert.timestamp} \n{self.cycle_through_string(alert.message)}"
         self.text_norefresh(display_string)
+
+    def cycle_through_string(self, str: str) -> str:
+        str_len: int = len(str)
+        if str_len <= 12:
+            return str
+        self._current_string_depth = self._current_string_depth + 1
+        
+        return str[(self._current_string_depth % str_len):((self._current_string_depth + 12) % str_len)]
+        
+
 
     @property
     def lcd_state(self) -> LcdState:
