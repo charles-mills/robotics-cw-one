@@ -18,10 +18,10 @@
 # For more information see https://github.com/DexterInd/GrovePi/blob/master/LICENSE
 
 
-import smbus
 import time
-import RPi.GPIO as GPIO
 
+import RPi.GPIO as GPIO
+import smbus
 
 rev = GPIO.RPI_REVISION
 if rev == 2 or rev == 3:
@@ -29,18 +29,18 @@ if rev == 2 or rev == 3:
 else:
     bus = smbus.SMBus(0)
 
-HP20X_I2C_DEV_ID = 0x76     # Barometer device address
+HP20X_I2C_DEV_ID = 0x76  # Barometer device address
 
-HP20X_SOFT_RST = 0x06       # Soft reset the device
-OK_HP20X_DEV = 0X80         # Default value for
+HP20X_SOFT_RST = 0x06  # Soft reset the device
+OK_HP20X_DEV = 0X80  # Default value for
 
 HP20X_READ_PARA_REG = 0x8F  # Read Register
 
-HP20X_ADC_CVT = 0x48        # Digital filter rate and channel
+HP20X_ADC_CVT = 0x48  # Digital filter rate and channel
 
-HP20X_READ_P = 0x30         # Read Pressure
-HP20X_READ_A = 0x31         # Read Altitude
-HP20X_READ_T = 0x32         # Read Temperature
+HP20X_READ_P = 0x30  # Read Pressure
+HP20X_READ_A = 0x31  # Read Altitude
+HP20X_READ_T = 0x32  # Read Temperature
 
 
 class barometer:

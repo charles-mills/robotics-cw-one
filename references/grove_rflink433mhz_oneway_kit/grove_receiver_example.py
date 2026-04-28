@@ -31,8 +31,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-import grove_rflink433mhz
 import sys
+
+import grove_rflink433mhz
+
 
 # Don't forget to run it with Python 3 !!
 # Don't forget to run it with Python 3 !!

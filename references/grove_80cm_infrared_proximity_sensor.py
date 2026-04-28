@@ -35,13 +35,14 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect the Grove 80cm Infrared Proximity Sensor to analog port A0
 # SIG,NC,VCC,GND
 sensor = 0
 
-grovepi.pinMode(sensor,"INPUT")
+grovepi.pinMode(sensor, "INPUT")
 time.sleep(1)
 
 # Reference voltage of ADC is 5v
@@ -61,4 +62,4 @@ while True:
         print("sensor_value =", sensor_value, " voltage =", voltage)
 
     except IOError:
-        print ("Error")
+        print("Error")

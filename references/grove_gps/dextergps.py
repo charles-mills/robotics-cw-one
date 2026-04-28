@@ -1,27 +1,31 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GrovePi/blob/master/LICENSE
 
-import grovepi
-import serial, time, sys
 import re
 
+import serial
+import time
+
 en_debug = False
+
 
 def debug(in_str):
     if en_debug:
         print(in_str)
 
-patterns=["$GPGGA",
-    "/[0-9]{6}\.[0-9]{2}/", # timestamp hhmmss.ss
-    "/[0-9]{4}.[0-9]{2,/}", # latitude of position
-    "/[NS]",  # North or South
-    "/[0-9]{4}.[0-9]{2}", # longitude of position
-    "/[EW]",  # East or West
-    "/[012]", # GPS Quality Indicator
-    "/[0-9]+", # Number of satellites
-    "/./", # horizontal dilution of precision x.x
-    "/[0-9]+\.[0-9]*/" # altitude x.x
-    ]
+
+patterns = ["$GPGGA",
+            "/[0-9]{6}\.[0-9]{2}/",  # timestamp hhmmss.ss
+            "/[0-9]{4}.[0-9]{2,/}",  # latitude of position
+            "/[NS]",  # North or South
+            "/[0-9]{4}.[0-9]{2}",  # longitude of position
+            "/[EW]",  # East or West
+            "/[012]",  # GPS Quality Indicator
+            "/[0-9]+",  # Number of satellites
+            "/./",  # horizontal dilution of precision x.x
+            "/[0-9]+\.[0-9]*/"  # altitude x.x
+            ]
+
 
 class GROVEGPS():
     def __init__(self, port='/dev/ttyAMA0', baud=9600, timeout=0):
@@ -29,10 +33,10 @@ class GROVEGPS():
         self.ser.flush()
         self.raw_line = ""
         self.gga = []
-        self.validation =[] # contains compiled regex
+        self.validation = []  # contains compiled regex
 
         # compile regex once to use later
-        for i in range(len(patterns)-1):
+        for i in range(len(patterns) - 1):
             self.validation.append(re.compile(patterns[i]))
 
         self.clean_data()
@@ -47,7 +51,7 @@ class GROVEGPS():
         after 50 attemps to reach GPS
         '''
         self.timestamp = ""
-        self.lat = -1.0    # degrees minutes and decimals of minute
+        self.lat = -1.0  # degrees minutes and decimals of minute
         self.NS = ""
         self.lon = -1.0
         self.EW = ""
@@ -55,7 +59,7 @@ class GROVEGPS():
         self.satellites = -1
         self.altitude = -1.0
 
-        self.latitude = -1.0  #degrees and decimals
+        self.latitude = -1.0  # degrees and decimals
         self.longitude = -1.0
         self.fancylat = ""  #
 
@@ -71,7 +75,6 @@ class GROVEGPS():
     #         self.raw_line = self.ser.readline().strip()
     #         if self.raw_line[:6] == "GPZDA":  # found date line!
     #             print (self.raw_line)
-
 
     def read(self):
         '''
@@ -112,30 +115,30 @@ class GROVEGPS():
             return False
 
         self.gga = in_line.split(",")
-        debug (self.gga)
+        debug(self.gga)
 
-        #Sometimes multiple GPS data packets come into the stream. Take the data only after the last '$GPGGA' is seen
+        # Sometimes multiple GPS data packets come into the stream. Take the data only after the last '$GPGGA' is seen
         try:
-            ind=self.gga.index('$GPGGA', 5, len(self.gga))
-            self.gga=self.gga[ind:]
+            ind = self.gga.index('$GPGGA', 5, len(self.gga))
+            self.gga = self.gga[ind:]
         except ValueError:
             pass
 
         if len(self.gga) != 15:
-            debug ("Failed: wrong number of parameters ")
-            debug (self.gga)
+            debug("Failed: wrong number of parameters ")
+            debug(self.gga)
             return False
 
-        for i in range(len(self.validation)-1):
+        for i in range(len(self.validation) - 1):
             if len(self.gga[i]) == 0:
-                debug ("Failed: empty string %d"%i)
+                debug("Failed: empty string %d" % i)
                 return False
             test = self.validation[i].match(self.gga[i])
             if test == False:
-                debug ("Failed: wrong format on parameter %d"%i)
+                debug("Failed: wrong format on parameter %d" % i)
                 return False
             else:
-                debug("Passed %d"%i)
+                debug("Passed %d" % i)
 
         try:
             self.timestamp = self.gga[1]
@@ -154,15 +157,15 @@ class GROVEGPS():
             if self.EW == "W":
                 self.longitude = -self.longitude
         except ValueError:
-            debug( "FAILED: invalid value")
+            debug("FAILED: invalid value")
 
         return True
 
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     gps = GROVEGPS()
     while True:
         time.sleep(1)
         in_data = gps.read()
         if in_data != []:
-            print (in_data)
+            print(in_data)

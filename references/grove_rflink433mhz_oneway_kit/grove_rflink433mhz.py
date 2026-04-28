@@ -1,9 +1,11 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GrovePi/blob/master/LICENSE
 
-import serial
 import binascii
 import struct
+
+import serial
+
 
 # Library written for Python 3!
 
@@ -18,18 +20,18 @@ class RFLinker:
     # max_bad_readings = 32 represents how many times we wait for a valid byte data before giving up
     #
     # retries = 20 number of times it starts the process of reading a message before giving up
-    def __init__(self, port = '/dev/ttyS0', chunk_size = 32, max_bad_readings = 32, retries = 20):
-        self.serial = serial.Serial(port, baudrate = 1200)
+    def __init__(self, port='/dev/ttyS0', chunk_size=32, max_bad_readings=32, retries=20):
+        self.serial = serial.Serial(port, baudrate=1200)
         self.chunk_size = chunk_size
         self.max_bad_readings = max_bad_readings
         self.retries = retries
-        self.display_verbose = False # whether we want or not feedback on the screen
+        self.display_verbose = False  # whether we want or not feedback on the screen
 
-        self.delimiter = chr(2) # new transmission delimiter -> the 1st thing we search when reading
-        self.start_condition = chr(1) + chr(27) # new transmission start condition
-        self.crc_offset = 256 # how much we offset crc32's bytes by adding this value so that we can send data over the air
+        self.delimiter = chr(2)  # new transmission delimiter -> the 1st thing we search when reading
+        self.start_condition = chr(1) + chr(27)  # new transmission start condition
+        self.crc_offset = 256  # how much we offset crc32's bytes by adding this value so that we can send data over the air
 
-        self.end_condition = '\r\n' # CR + LF for ending a transmssion
+        self.end_condition = '\r\n'  # CR + LF for ending a transmssion
 
     # private function for displaying information
     def __print(self, *strings):
@@ -61,9 +63,9 @@ class RFLinker:
         outgoing_message += self.start_condition
         outgoing_message += count
         outgoing_message += no_transmissions
-        outgoing_message += chr(len(message)) # this is the length of the fragment message
+        outgoing_message += chr(len(message))  # this is the length of the fragment message
 
-        outgoing_message += message # we add the actual message
+        outgoing_message += message  # we add the actual message
 
         # compute the CRC32
         crc32_checker = binascii.crc32(outgoing_message.encode('utf-8'))
@@ -86,7 +88,7 @@ class RFLinker:
         self.serial.write(outgoing_message)
 
     # function for enabling / disabling feedback
-    def setDisplayVerbose(self, choice = True):
+    def setDisplayVerbose(self, choice=True):
         self.display_verbose = choice
 
     # function for setting the chunk_size
@@ -128,7 +130,7 @@ class RFLinker:
 
     # private function for reading data
     # it's a recursive function and works in tandem with readMessage function
-    def __readFraments(self, first_time, met_first_trans, last_counter = 1):
+    def __readFraments(self, first_time, met_first_trans, last_counter=1):
         current_bad_readings = 0
         # read until threshold of bad read characters is reached
         # don't consider UnicodeDecodeError exceptions
@@ -176,7 +178,7 @@ class RFLinker:
 
         current_count = ord(current_count)
         no_transmissions = ord(no_transmissions)
-        #print(message, first_time, current_count, no_transmissions, unpacked_crc, binascii.crc32(incoming_message.encode('utf-8')))
+        # print(message, first_time, current_count, no_transmissions, unpacked_crc, binascii.crc32(incoming_message.encode('utf-8')))
 
         # the next following lines check whether the data fragments are out of order
         # and whether we still need to read fragments. If that's the case, then we append the

@@ -34,13 +34,14 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect the Grove Electricity Sensor to analog port A0
 # SIG,NC,NC,GND
 sensor = 0
 
-grovepi.pinMode(sensor,"INPUT")
+grovepi.pinMode(sensor, "INPUT")
 
 # Vcc of the grove interface is normally 5v
 grove_vcc = 5
@@ -65,4 +66,4 @@ while True:
         time.sleep(1)
 
     except IOError:
-        print ("Error")
+        print("Error")

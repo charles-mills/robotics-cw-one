@@ -34,6 +34,7 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect first LED in Chainable RGB LED chain to digital port D7
@@ -43,9 +44,9 @@ pin = 7
 
 # I have 10 LEDs connected in series with the first connected to the GrovePi and the last not connected
 # First LED input socket connected to GrovePi, output socket connected to second LED input and so on
-numleds = 4     #If you only plug 1 LED, change 10 to 1
+numleds = 4  # If you only plug 1 LED, change 10 to 1
 
-grovepi.pinMode(pin,"OUTPUT")
+grovepi.pinMode(pin, "OUTPUT")
 time.sleep(1)
 
 # Chainable RGB LED methods
@@ -57,14 +58,14 @@ time.sleep(1)
 # grovepi.chainableRgbLed_setLevel(pin, level, reverse)
 
 # test colors used in grovepi.chainableRgbLed_test()
-testColorBlack = 0   # 0b000 #000000
-testColorBlue = 1    # 0b001 #0000FF
-testColorGreen = 2   # 0b010 #00FF00
-testColorCyan = 3    # 0b011 #00FFFF
-testColorRed = 4     # 0b100 #FF0000
-testColorMagenta = 5 # 0b101 #FF00FF
+testColorBlack = 0  # 0b000 #000000
+testColorBlue = 1  # 0b001 #0000FF
+testColorGreen = 2  # 0b010 #00FF00
+testColorCyan = 3  # 0b011 #00FFFF
+testColorRed = 4  # 0b100 #FF0000
+testColorMagenta = 5  # 0b101 #FF00FF
 testColorYellow = 6  # 0b110 #FFFF00
-testColorWhite = 7   # 0b111 #FFFFFF
+testColorWhite = 7  # 0b111 #FFFFFF
 
 # patterns used in grovepi.chainableRgbLed_pattern()
 thisLedOnly = 0
@@ -72,22 +73,25 @@ allLedsExceptThis = 1
 thisLedAndInwards = 2
 thisLedAndOutwards = 3
 
-sleep_time=0.5
+sleep_time = 0.5
 
-#Turns off the led specified by led_num
+
+# Turns off the led specified by led_num
 def turn_off_led(led_num):
-    grovepi.storeColor(0,0,0)
+    grovepi.storeColor(0, 0, 0)
     time.sleep(.1)
     grovepi.chainableRgbLed_pattern(pin, thisLedOnly, led_num)
     time.sleep(.1)
-  
-#Turns on the led specified by led_num to color set by r,g,b
-def turn_on_led(led_num,r,g,b):
-    grovepi.storeColor(r,g,b)
+
+
+# Turns on the led specified by led_num to color set by r,g,b
+def turn_on_led(led_num, r, g, b):
+    grovepi.storeColor(r, g, b)
     time.sleep(.1)
     grovepi.chainableRgbLed_pattern(pin, thisLedOnly, led_num)
     time.sleep(.1)
-    
+
+
 try:
 
     print("Initialise")
@@ -95,30 +99,30 @@ try:
     # init chain of leds
     grovepi.chainableRgbLed_init(pin, numleds)
     time.sleep(.5)
-    
+
     print("1")
     # turn on led at 0
-    turn_on_led(0,0,255,0)
+    turn_on_led(0, 0, 255, 0)
     time.sleep(sleep_time)
 
     # turn on led at 1
     print("2")
     turn_off_led(0)
-    turn_on_led(1,0,255,0)
+    turn_on_led(1, 0, 255, 0)
     time.sleep(sleep_time)
 
     # turn on led at 2
     print("3")
     turn_off_led(1)
-    turn_on_led(2,0,255,0)
+    turn_on_led(2, 0, 255, 0)
     time.sleep(sleep_time)
-    
+
     # turn on led at 3
     print("4")
     turn_off_led(2)
-    turn_on_led(3,0,255,0)
+    turn_on_led(3, 0, 255, 0)
     time.sleep(sleep_time)
-    
+
     # turn off all
     print("Off")
     grovepi.chainableRgbLed_test(pin, numleds, testColorBlack)
@@ -127,4 +131,4 @@ except KeyboardInterrupt:
     # reset (all off)
     grovepi.chainableRgbLed_test(pin, numleds, testColorBlack)
 except IOError:
-    print ("Error")
+    print("Error")

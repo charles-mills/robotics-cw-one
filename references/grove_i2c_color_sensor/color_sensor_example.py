@@ -1,4 +1,5 @@
 import time
+
 import grove_i2c_color_sensor
 
 # Open connection to sensor
@@ -13,7 +14,7 @@ color_sensor.start_integration()
 time.sleep(.1)
 
 if color_sensor.is_integration_complete():
-    print ("Continuous integration complete. Read color:")
+    print("Continuous integration complete. Read color:")
     color = color_sensor.read_rgbc()
     print("RGB: {},{},{} - Clear {}".format(color[0], color[1], color[2], color[3]))
     color = color_sensor.read_xy()
@@ -36,7 +37,7 @@ time.sleep(0.2)
 color_sensor.stop_integration()
 
 if color_sensor.is_integration_complete():
-    print ("Manual integration complete. Read color:")
+    print("Manual integration complete. Read color:")
     color = color_sensor.read_rgbc()
     print("RGB: {},{},{} - Clear {}".format(color[0], color[1], color[2], color[3]))
     color = color_sensor.read_xy()

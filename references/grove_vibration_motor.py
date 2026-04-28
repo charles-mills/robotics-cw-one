@@ -34,28 +34,29 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect the Grove Vibration Motor to digital port D8
 # SIG,NC,VCC,GND
 vibration_motor = 8
 
-grovepi.pinMode(vibration_motor,"OUTPUT")
+grovepi.pinMode(vibration_motor, "OUTPUT")
 
 while True:
     try:
         # Start vibrating for 1 second
-        grovepi.digitalWrite(vibration_motor,1)
-        print ('start')
+        grovepi.digitalWrite(vibration_motor, 1)
+        print('start')
         time.sleep(0.5)
 
         # Stop vibrating for 1 second, then repeat
-        grovepi.digitalWrite(vibration_motor,0)
-        print ('stop')
+        grovepi.digitalWrite(vibration_motor, 0)
+        print('stop')
         time.sleep(0.5)
 
     except KeyboardInterrupt:
-        grovepi.digitalWrite(vibration_motor,0)
+        grovepi.digitalWrite(vibration_motor, 0)
         break
     except IOError:
-        print ("Error")
+        print("Error")

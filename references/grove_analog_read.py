@@ -34,17 +34,18 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
-#Sensor connected to A0 Port 
-sensor = 14		# Pin 14 is A0 Port.
-grovepi.pinMode(sensor,"INPUT")
+# Sensor connected to A0 Port
+sensor = 14  # Pin 14 is A0 Port.
+grovepi.pinMode(sensor, "INPUT")
 while True:
     try:
         sensor_value = grovepi.analogRead(sensor)
 
-        print ("sensor_value = %d" %sensor_value)
+        print("sensor_value = %d" % sensor_value)
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

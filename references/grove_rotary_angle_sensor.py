@@ -36,8 +36,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-
 import time
+
 import grovepi
 
 # Connect the Grove Rotary Angle Sensor to analog port A0
@@ -48,8 +48,8 @@ potentiometer = 0
 # SIG,NC,VCC,GND
 led = 5
 
-grovepi.pinMode(potentiometer,"INPUT")
-grovepi.pinMode(led,"OUTPUT")
+grovepi.pinMode(potentiometer, "INPUT")
+grovepi.pinMode(led, "OUTPUT")
 time.sleep(1)
 
 # Reference voltage of ADC is 5v
@@ -76,11 +76,12 @@ while True:
         brightness = int(degrees / full_angle * 255)
 
         # Give PWM output to LED
-        grovepi.analogWrite(led,brightness)
+        grovepi.analogWrite(led, brightness)
 
-        print("sensor_value = %d voltage = %.2f degrees = %.1f brightness = %d" %(sensor_value, voltage, degrees, brightness))
+        print("sensor_value = %d voltage = %.2f degrees = %.1f brightness = %d" % (sensor_value, voltage, degrees,
+                                                                                   brightness))
     except KeyboardInterrupt:
-        grovepi.analogWrite(led,0)
+        grovepi.analogWrite(led, 0)
         break
     except IOError:
-        print ("Error")
+        print("Error")

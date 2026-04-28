@@ -34,6 +34,7 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect the Grove Real Time Clock to any I2C port eg. I2C-1
@@ -46,4 +47,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

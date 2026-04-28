@@ -35,13 +35,14 @@ THE SOFTWARE.
 # NOTE: The sensitivity can be adjusted by the onboard potentiometer
 
 import time
+
 import grovepi
 
 # Connect the Grove Piezo Vibration Sensor to analog port A0
 # OUT,NC,VCC,GND
 piezo = 0
 
-grovepi.pinMode(piezo,"INPUT")
+grovepi.pinMode(piezo, "INPUT")
 
 while True:
     try:
@@ -50,4 +51,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

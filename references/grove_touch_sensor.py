@@ -33,13 +33,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 import time
+
 import grovepi
 
 # Connect the Grove Touch Sensor to digital port D4
 # SIG,NC,VCC,GND
 touch_sensor = 4
 
-grovepi.pinMode(touch_sensor,"INPUT")
+grovepi.pinMode(touch_sensor, "INPUT")
 
 while True:
     try:
@@ -47,4 +48,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

@@ -33,13 +33,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 import time
+
 import grovepi
 
 # Connect the Grove Magnetic Switch to digital port D3
 # SIG,NC,VCC,GND
 magnetic_switch = 3
 
-grovepi.pinMode(magnetic_switch,"INPUT")
+grovepi.pinMode(magnetic_switch, "INPUT")
 
 while True:
     try:
@@ -47,4 +48,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

@@ -2,9 +2,6 @@ import time
 from dataclasses import dataclass
 from enum import Enum, auto
 
-from sensors import ultrasonic
-from sensors.dht import Dht
-
 
 class AlertType(Enum):
     MOTION = auto()
@@ -51,18 +48,20 @@ class AlertManager:
 
         self._active_alerts = [i for i in self._active_alerts if i.alert_type != alert_type]
 
-    def try_resolve_alerts(self, dht: Dht, ult: ultrasonic) -> None:
+    def try_resolve_alerts(self, dht_temp: float, dht_humidity: float) -> None:
         """
         checks whether current values are below the required threshold to remove alerts for temp and humidity
 
         """
-        if dht._temp > 80:
+
+        ## CHECK THESE OUT
+        if dht_temp > 80.0:
             self.auto_resolve_alert(AlertType.HIGH_TEMP)
-        if dht._humidity > 80:
+        if dht_humidity > 80.0:
             self.auto_resolve_alert(AlertType.HIGH_HUM)
 
     @property
-    def current_alert(self) -> Alert | None:
+    def current_alert(self) -> Alert:
         if self._active_alerts:
             return self._active_alerts[0]
 

@@ -33,6 +33,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 import time
+
 import grovepi
 
 # Connect the Grove Loudness Sensor to analog port A0
@@ -44,8 +45,8 @@ while True:
         # Read the sound level
         sensor_value = grovepi.analogRead(loudness_sensor)
 
-        print("sensor_value = %d" %sensor_value)
+        print("sensor_value = %d" % sensor_value)
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-import smbus
 import RPi.GPIO as GPIO
-#import grovepi
+import smbus
+# import grovepi
 from grove_i2c_barometic_sensor_BMP180 import BMP085
 
 # ===========================================================================

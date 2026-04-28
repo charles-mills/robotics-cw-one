@@ -43,6 +43,7 @@ THE SOFTWARE.
 # The flow sensor readings are updated once every 2 seconds on the firmware
 
 import time
+
 import grovepi
 
 print("Reading from the Flow meter")
@@ -50,17 +51,17 @@ print("Reading from the Flow meter")
 # default pin is 2 and default update period is 2000 ms
 grovepi.flowEnable()
 
-time_to_run = 10 # 10 seconds
-start = time.time() # current time in seconds
+time_to_run = 10  # 10 seconds
+start = time.time()  # current time in seconds
 old_val = 0
 
 while start + time_to_run > time.time():
 
-	# defaults to pin 2
-	new_val = grovepi.flowRead()
-	if old_val != new_val:
-		print("{:3d} L/h".format(new_val))
-		old_val = new_val
+    # defaults to pin 2
+    new_val = grovepi.flowRead()
+    if old_val != new_val:
+        print("{:3d} L/h".format(new_val))
+        old_val = new_val
 
 # and disable the interrupt on pin 2
 grovepi.flowDisable()

@@ -36,8 +36,9 @@ THE SOFTWARE.
 # Connect the OLED to any I2C port eg. I2C-1
 # Can be found at I2C address 0x3c
 
-import grove_oled
 import time
+
+import grove_oled
 
 grove_oled.oled_init()
 grove_oled.oled_clearDisplay()
@@ -45,6 +46,6 @@ grove_oled.oled_setNormalDisplay()
 grove_oled.oled_setVerticalMode()
 time.sleep(.1)
 
-for i in range(0,12):
-    grove_oled.oled_setTextXY(i,0)
+for i in range(0, 12):
+    grove_oled.oled_setTextXY(i, 0)
     grove_oled.oled_putString("Hello World")

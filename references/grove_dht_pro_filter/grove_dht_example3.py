@@ -32,9 +32,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-from grove_dht import Dht
 import signal
-import sys
+
+from grove_dht import Dht
 
 # Don't forget to run it with Python 3 !!
 # Don't forget to run it with Python 3 !!
@@ -45,13 +45,16 @@ import sys
 
 dht_sensor = Dht()
 
+
 def signal_handler(signal, frame):
     global dht_sensor
     dht_sensor.stop()
 
+
 def callbackFunc():
     global dht_sensor
     print(dht_sensor)
+
 
 def Main():
     print("[program is running][please wait]")

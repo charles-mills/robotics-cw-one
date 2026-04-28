@@ -34,6 +34,7 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # The sensitivity can be adjusted by the onboard potentiometer
@@ -42,7 +43,7 @@ import grovepi
 # SIG,NC,VCC,GND
 hcho_sensor = 0
 
-grovepi.pinMode(hcho_sensor,"INPUT")
+grovepi.pinMode(hcho_sensor, "INPUT")
 
 # Vcc of the grove interface is normally 5v
 grove_vcc = 5
@@ -59,4 +60,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

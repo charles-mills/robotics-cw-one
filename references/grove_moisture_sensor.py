@@ -41,7 +41,7 @@ THE SOFTWARE.
 # 		0    20   300  sensor in dry soil
 # 		300  580  700  sensor in humid soil
 # 		700  940  950  sensor in water
-	
+
 # 	Sensor values observer: 
 # 		Val  Condition
 # 		0    sensor in open air
@@ -50,6 +50,7 @@ THE SOFTWARE.
 # 		690  sensor in water
 
 import time
+
 import grovepi
 
 # Connect the Grove Moisture Sensor to analog port A0
@@ -64,4 +65,4 @@ while True:
     except KeyboardInterrupt:
         break
     except IOError:
-        print ("Error")
+        print("Error")

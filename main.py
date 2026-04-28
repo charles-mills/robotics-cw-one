@@ -1,4 +1,5 @@
 import time
+import traceback
 
 from inputs import SelectButton, CycleButton
 from managers import SettingsDial, AlertManager
@@ -32,7 +33,7 @@ class Main:
                 time.sleep(0.1)
 
             except IOError:
-                print("IOError")
+                traceback.print_exc()
             except KeyboardInterrupt:
                 pass
 

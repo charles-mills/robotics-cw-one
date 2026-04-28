@@ -1,7 +1,9 @@
-import smbus
-import time
 import math
+import time
+
 import RPi.GPIO
+import smbus
+
 
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GrovePi/blob/master/LICENSE
@@ -28,17 +30,17 @@ class GroveI2CColorSensor:
     - TCS3414-A Datasheet: http://www.seeedstudio.com/wiki/File:TCS3404_TCS3414-A.pdf
     """
     # Common colors coordinates (CIE xy and RGB)
-    COLOR_TABLE = {"Red":           {"x": 0.64,  "y": 0.33,  "r": 255, "g": 0,   "b": 0},
-                   "Green":         {"x": 0.3,   "y": 0.6,   "r": 0,   "g": 255, "b": 0},
-                   "Blue":          {"x": 0.15,  "y": 0.06,  "r": 0,   "g": 0,   "b": 255},
-                   "Yellow":        {"x": 0.419, "y": 0.505, "r": 255, "g": 255, "b": 0},
-                   "Magenta":       {"x": 0.321, "y": 0.154, "r": 255, "g": 0,   "b": 255},
-                   "Cyan":          {"x": 0.225, "y": 0.329, "r": 0,   "g": 255, "b": 255},
-                   "Deep pink":     {"x": 0.466, "y": 0.238, "r": 255, "g": 20,  "b": 147},
-                   "Orange":        {"x": 0.5,   "y": 0.441, "r": 255, "g": 165, "b": 0},
-                   "Saddle brown":  {"x": 0.526, "y": 0.399, "r": 139, "g": 69,  "b": 19},
-                   "Grey / White":  {"x": 0.313, "y": 0.329, "r": 255, "g": 255, "b": 255},
-                   "Black":         {"x": 0,     "y": 0,     "r": 0,   "g": 0,   "b": 0}}
+    COLOR_TABLE = {"Red": {"x": 0.64, "y": 0.33, "r": 255, "g": 0, "b": 0},
+                   "Green": {"x": 0.3, "y": 0.6, "r": 0, "g": 255, "b": 0},
+                   "Blue": {"x": 0.15, "y": 0.06, "r": 0, "g": 0, "b": 255},
+                   "Yellow": {"x": 0.419, "y": 0.505, "r": 255, "g": 255, "b": 0},
+                   "Magenta": {"x": 0.321, "y": 0.154, "r": 255, "g": 0, "b": 255},
+                   "Cyan": {"x": 0.225, "y": 0.329, "r": 0, "g": 255, "b": 255},
+                   "Deep pink": {"x": 0.466, "y": 0.238, "r": 255, "g": 20, "b": 147},
+                   "Orange": {"x": 0.5, "y": 0.441, "r": 255, "g": 165, "b": 0},
+                   "Saddle brown": {"x": 0.526, "y": 0.399, "r": 139, "g": 69, "b": 19},
+                   "Grey / White": {"x": 0.313, "y": 0.329, "r": 255, "g": 255, "b": 255},
+                   "Black": {"x": 0, "y": 0, "r": 0, "g": 0, "b": 0}}
 
     # Sensor address on SMBus / I2C bus
     _I2C_SENSOR_ADDRESS = 0X39
@@ -150,8 +152,8 @@ class GroveI2CColorSensor:
         :param integration_time_in_ms: supported values in ms are 12, 100 and 400.
         """
         assert integration_time_in_ms == 12 \
-            or integration_time_in_ms == 100 \
-            or integration_time_in_ms == 400, \
+               or integration_time_in_ms == 100 \
+               or integration_time_in_ms == 400, \
             "Continuous integration supports only 12ms, 100ms or 400ms integration durations"
 
         # Convert integration time value into the corresponding byte values expected by the sensor.
@@ -192,12 +194,12 @@ class GroveI2CColorSensor:
         assert gain_multiplier == 1 or gain_multiplier == 4 or gain_multiplier == 16 or gain_multiplier == 64, \
             "Supported gain multipliers: 1, 4, 16 and 64"
         assert prescaler_divider == 1 \
-            or prescaler_divider == 2 \
-            or prescaler_divider == 4 \
-            or prescaler_divider == 8 \
-            or prescaler_divider == 16 \
-            or prescaler_divider == 32 \
-            or prescaler_divider == 64, \
+               or prescaler_divider == 2 \
+               or prescaler_divider == 4 \
+               or prescaler_divider == 8 \
+               or prescaler_divider == 16 \
+               or prescaler_divider == 32 \
+               or prescaler_divider == 64, \
             "Supported prescaler dividers: 1, 2, 4, 8, 16, 32 and 64"
 
         # Convert gain multiplier into the corresponding byte values expected by the sensor.
@@ -318,7 +320,7 @@ class GroveI2CColorSensor:
         for current_color in self.COLOR_TABLE:
             current_coordinates = self.COLOR_TABLE[current_color]
             current_dist = math.sqrt(
-                    (current_coordinates["y"] - xy[1])**2 + (current_coordinates["x"] - xy[0])**2)
+                (current_coordinates["y"] - xy[1]) ** 2 + (current_coordinates["x"] - xy[0]) ** 2)
             if current_dist < closest_distance:
                 closest_color = current_color
                 closest_distance = current_dist

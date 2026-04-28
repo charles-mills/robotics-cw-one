@@ -20,36 +20,34 @@
 #
 ########################################################################
 
-import serial, time
-import smbus
-import math
-import RPi.GPIO as GPIO
-import struct
-import sys
 import ir_receiver_check
+import serial
+import time
 
 if ir_receiver_check.check_ir():
-	print("Disable IR receiver before continuing")
-	exit()
+    print("Disable IR receiver before continuing")
+    exit()
 
-ser = serial.Serial('/dev/ttyAMA0',  9600, timeout = 0)	#Open the serial port at 9600 baud
+ser = serial.Serial('/dev/ttyAMA0', 9600, timeout=0)  # Open the serial port at 9600 baud
 ser.flush()
+
 
 def readlineCR():
     rv = ""
     while True:
-        time.sleep(0.01)	# This is the critical part.  A small pause 
-        					# works really well here.
-        ch = ser.read()        
+        time.sleep(0.01)  # This is the critical part.  A small pause
+        # works really well here.
+        ch = ser.read()
         rv += ch
-        if ch=='\r' or ch=='':
+        if ch == '\r' or ch == '':
             return rv
 
+
 while True:
-	#readlineCR()
-	x=readlineCR()
-	print(x)
-	
+    # readlineCR()
+    x = readlineCR()
+    print(x)
+
 ########################################################################
 #
 #	The output should look like something below.

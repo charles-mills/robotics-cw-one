@@ -34,14 +34,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
+import time
+
 #################################################################################################################################################
 # NOTE:
 # The software for this sensor is still in development and might make your GrovePi unuable as long as this sensor is connected with the GrovePi
 #################################################################################################################################################
 import grove_i2c_temp_hum_mini
-import time
 
-t= grove_i2c_temp_hum_mini.th02()
+t = grove_i2c_temp_hum_mini.th02()
 while True:
-	print("Temp: %.2fC\tHumidity:%.2f" %(t.getTemperature(),t.getHumidity()),"%") 
-	time.sleep(.5)
+    print("Temp: %.2fC\tHumidity:%.2f" % (t.getTemperature(), t.getHumidity()), "%")
+    time.sleep(.5)

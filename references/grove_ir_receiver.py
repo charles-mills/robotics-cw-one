@@ -33,19 +33,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-# NOTE: 
+# NOTE:
 #		Connect the IR sensor to any port. In the code use the pin as port+1. So if you are connecting the sensor to port 7, use "ir_recv_pin(8)"
 import time
+
 import grovepi
 
 grovepi.ir_recv_pin(9)
-print ("Press any button on the remote to see the data")
+print("Press any button on the remote to see the data")
 while True:
-	ir_data_back=grovepi.ir_read_signal()
-	if ir_data_back[0]==-1:		#IO Error
-		pass
-	elif ir_data_back[0]==0:	#Old signal
-		pass
-	else:
-		print(ir_data_back[1:])		#Current signal from IR remote
-	time.sleep(.1)
+    ir_data_back = grovepi.ir_read_signal()
+    if ir_data_back[0] == -1:  # IO Error
+        pass
+    elif ir_data_back[0] == 0:  # Old signal
+        pass
+    else:
+        print(ir_data_back[1:])  # Current signal from IR remote
+    time.sleep(.1)

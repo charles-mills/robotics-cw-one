@@ -33,13 +33,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 import time
+
 import grovepi
 
 # Connect the Grove Collision Sensor to digital port D2
 # SIG,NC,VCC,GND
 collision_sensor = 2
 
-grovepi.pinMode(collision_sensor,"INPUT")
+grovepi.pinMode(collision_sensor, "INPUT")
 
 while True:
     try:
@@ -47,4 +48,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

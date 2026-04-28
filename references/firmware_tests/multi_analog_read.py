@@ -33,19 +33,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-import time
 import grovepi
 
-#Sensor connected to A0,A1,A2 Port 
-sensor0 = 0		 
-sensor1 = 1		 
-sensor2 = 2		 
+# Sensor connected to A0,A1,A2 Port
+sensor0 = 0
+sensor1 = 1
+sensor2 = 2
 
 while True:
     try:
         sensor_value0 = grovepi.analogRead(sensor0)
         sensor_value1 = grovepi.analogRead(sensor1)
         sensor_value2 = grovepi.analogRead(sensor2)
-        print ("%d,%d,%d" %(sensor_value0,sensor_value1,sensor_value2))
+        print("%d,%d,%d" % (sensor_value0, sensor_value1, sensor_value2))
     except IOError:
-        print ("Error")
+        print("Error")

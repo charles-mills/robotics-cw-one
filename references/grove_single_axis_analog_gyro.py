@@ -34,16 +34,17 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect the Grove Single Axis Analog Gyro to analog port A0
 # SIG,NC,VCC,GND
 sensor = 0
 
-grovepi.pinMode(sensor,"INPUT")
+grovepi.pinMode(sensor, "INPUT")
 
 # calibration
-print ("calibrating...")
+print("calibrating...")
 sum = 0
 errors = 0
 for x in range(0, 100):
@@ -51,18 +52,18 @@ for x in range(0, 100):
         # Get sensor value
         v = grovepi.analogRead(sensor)
         sum += v
-        #time.sleep(.05)
+        # time.sleep(.05)
     except IOError:
-        print ("Error")
+        print("Error")
         errors += 1
 
 if errors == 100:
-    print ("unable to calibrate")
+    print("unable to calibrate")
     raise SystemExit
 
 reference_value = sum / (100 - errors)
 
-print ("finished calibrating")
+print("finished calibrating")
 print("reference_value =", reference_value)
 
 # ready
@@ -78,4 +79,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-       print ("Error")
+        print("Error")

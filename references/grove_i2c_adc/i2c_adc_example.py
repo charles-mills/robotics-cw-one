@@ -33,13 +33,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-import grove_i2c_adc
 import time
 
+import grove_i2c_adc
+
 # You can initialize with a different address too: grove_i2c_adc.ADC(address=0x56)
-adc= grove_i2c_adc.ADC()
+adc = grove_i2c_adc.ADC()
 
 while True:
-	#Print the 12 bit value from the I2C ADC
-	print(adc.adc_read())
-	time.sleep(.5)
+    # Print the 12 bit value from the I2C ADC
+    print(adc.adc_read())
+    time.sleep(.5)

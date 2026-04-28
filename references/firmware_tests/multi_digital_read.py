@@ -32,7 +32,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
-import time
 import grovepi
 
 # Connect the Grove Button to digital port D2,D3 and D4
@@ -41,15 +40,15 @@ button2 = 2
 button3 = 3
 button4 = 4
 
-grovepi.pinMode(button2,"INPUT")
-grovepi.pinMode(button3,"INPUT")
-grovepi.pinMode(button4,"INPUT")
+grovepi.pinMode(button2, "INPUT")
+grovepi.pinMode(button3, "INPUT")
+grovepi.pinMode(button4, "INPUT")
 
 while True:
-	try:
-		d2=grovepi.digitalRead(button2)
-		d3=grovepi.digitalRead(button3)
-		d4=grovepi.digitalRead(button4)
-		print ("%d,%d,%d" %(d2,d3,d4))
-	except IOError:
-		print ("Error")
+    try:
+        d2 = grovepi.digitalRead(button2)
+        d3 = grovepi.digitalRead(button3)
+        d4 = grovepi.digitalRead(button4)
+        print("%d,%d,%d" % (d2, d3, d4))
+    except IOError:
+        print("Error")

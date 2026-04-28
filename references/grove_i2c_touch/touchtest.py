@@ -21,8 +21,7 @@
 import sys
 import time
 
-import MPR121 
-
+import MPR121
 
 print('MPR121 Capacitive Touch Sensor Test')
 
@@ -37,10 +36,10 @@ if not cap.begin():
 
 # Alternatively, specify a custom I2C address such as 0x5B (ADDR tied to 3.3V),
 # 0x5C (ADDR tied to SDA), or 0x5D (ADDR tied to SCL).
-#cap.begin(address=0x5B)
+# cap.begin(address=0x5B)
 
 # Also you can specify an optional I2C bus with the bus keyword parameter.
-#cap.begin(bus=1)
+# cap.begin(bus=1)
 
 # Main loop to print a message every time a pin is touched.
 print('Press Ctrl-C to quit.')
@@ -65,13 +64,13 @@ while True:
     # Alternatively, if you only care about checking one or a few pins you can 
     # call the is_touched method with a pin number to directly check that pin.
     # This will be a little slower than the above code for checking a lot of pins.
-    #if cap.is_touched(0):
+    # if cap.is_touched(0):
     #    print 'Pin 0 is being touched!'
-    
+
     # If you're curious or want to see debug info for each pin, uncomment the
     # following lines:
-    #print '\t\t\t\t\t\t\t\t\t\t\t\t\t 0x{0:0X}'.format(cap.touched())
-    #filtered = [cap.filtered_data(i) for i in range(12)]
-    #print 'Filt:', '\t'.join(map(str, filtered))
-    #base = [cap.baseline_data(i) for i in range(12)]
-    #print 'Base:', '\t'.join(map(str, base))
+    # print '\t\t\t\t\t\t\t\t\t\t\t\t\t 0x{0:0X}'.format(cap.touched())
+    # filtered = [cap.filtered_data(i) for i in range(12)]
+    # print 'Filt:', '\t'.join(map(str, filtered))
+    # base = [cap.baseline_data(i) for i in range(12)]
+    # print 'Base:', '\t'.join(map(str, base))

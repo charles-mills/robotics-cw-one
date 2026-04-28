@@ -37,6 +37,7 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect the Grove Light Sensor to analog port A0
@@ -50,8 +51,8 @@ led = 5
 # Turn on LED once sensor exceeds threshold resistance
 threshold = 100
 
-grovepi.pinMode(light_sensor,"INPUT")
-grovepi.pinMode(led,"OUTPUT")
+grovepi.pinMode(light_sensor, "INPUT")
+grovepi.pinMode(led, "OUTPUT")
 
 while True:
     try:
@@ -63,13 +64,13 @@ while True:
 
         if resistance > threshold:
             # Send HIGH to switch on LED
-            grovepi.digitalWrite(led,1)
+            grovepi.digitalWrite(led, 1)
         else:
             # Send LOW to switch off LED
-            grovepi.digitalWrite(led,0)
+            grovepi.digitalWrite(led, 0)
 
-        print("sensor_value = %d resistance = %.2f" %(sensor_value,  resistance))
+        print("sensor_value = %d resistance = %.2f" % (sensor_value, resistance))
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

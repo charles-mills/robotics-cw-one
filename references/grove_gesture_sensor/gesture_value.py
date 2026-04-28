@@ -35,34 +35,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-import grove_gesture_sensor
 import time
 
-g=grove_gesture_sensor.gesture()
+import grove_gesture_sensor
+
+g = grove_gesture_sensor.gesture()
 g.init()
 while True:
-	gest=g.return_gesture()
-	#Match the gesture
-	if gest==g.FORWARD:
-		print("FORWARD")
-	elif gest==g.BACKWARD:
-		print("BACKWARD")
-	elif gest==g.RIGHT:
-		print("RIGHT")
-	elif gest==g.LEFT:
-		print("LEFT")
-	elif gest==g.UP:
-		print("UP")
-	elif gest==g.DOWN:
-		print("DOWN")
-	elif gest==g.CLOCKWISE:
-		print("CLOCKWISE")
-	elif gest==g.ANTI_CLOCKWISE:
-		print("ANTI_CLOCKWISE")
-	elif gest==g.WAVE:
-		print("WAVE")
-	elif gest==0:
-		print("-")
-	else:
-		print("Error")
-	time.sleep(.1)
+    gest = g.return_gesture()
+    # Match the gesture
+    if gest == g.FORWARD:
+        print("FORWARD")
+    elif gest == g.BACKWARD:
+        print("BACKWARD")
+    elif gest == g.RIGHT:
+        print("RIGHT")
+    elif gest == g.LEFT:
+        print("LEFT")
+    elif gest == g.UP:
+        print("UP")
+    elif gest == g.DOWN:
+        print("DOWN")
+    elif gest == g.CLOCKWISE:
+        print("CLOCKWISE")
+    elif gest == g.ANTI_CLOCKWISE:
+        print("ANTI_CLOCKWISE")
+    elif gest == g.WAVE:
+        print("WAVE")
+    elif gest == 0:
+        print("-")
+    else:
+        print("Error")
+    time.sleep(.1)

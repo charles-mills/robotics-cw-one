@@ -33,14 +33,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-# Connect the CO2 sensor to the RPISER port on the GrovePi
-import grove_co2_lib
 import time
 
-co2= grove_co2_lib.CO2()
+# Connect the CO2 sensor to the RPISER port on the GrovePi
+import grove_co2_lib
+
+co2 = grove_co2_lib.CO2()
 
 while True:
-	[ppm,temp]= co2.read()
-	print("CO2 Conc: %d ppm\t Temp: %d C" %(ppm,temp))
-	time.sleep(1)
-	
+    [ppm, temp] = co2.read()
+    print("CO2 Conc: %d ppm\t Temp: %d C" % (ppm, temp))
+    time.sleep(1)

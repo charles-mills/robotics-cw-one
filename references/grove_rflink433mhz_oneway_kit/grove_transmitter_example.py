@@ -33,9 +33,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-import grove_rflink433mhz
-from time import sleep
 import sys
+from time import sleep
+
+import grove_rflink433mhz
+
 
 # Don't forget to run it with Python 3 !!
 # Don't forget to run it with Python 3 !!
@@ -64,6 +66,7 @@ def Main():
         # the delay is not necessary for the transmission of data
         # but for not overflowing the terminal
         sleep(0.02)
+
 
 if __name__ == "__main__":
     try:

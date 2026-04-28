@@ -22,10 +22,11 @@
 # THE SOFTWARE.
 
 # Can enable debug output by uncommenting:
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
+# import logging
+# logging.basicConfig(level=logging.DEBUG)
 
 import time
+
 import SI1145
 
 # Default constructor will pick a default I2C bus.
@@ -41,13 +42,12 @@ print('Press Cntrl + Z to stop')
 print('')
 
 while True:
-        vis = sensor.readVisible()
-        IR = sensor.readIR()
-        UV = sensor.readUV()
-        uvIndex = UV / 100.0
-        print('Vis:             ' + str(vis))
-        print('IR:              ' + str(IR))
-        print('UV Index:        ' + str(uvIndex))
-        print('')
-        time.sleep(1)
-
+    vis = sensor.readVisible()
+    IR = sensor.readIR()
+    UV = sensor.readUV()
+    uvIndex = UV / 100.0
+    print('Vis:             ' + str(vis))
+    print('IR:              ' + str(IR))
+    print('UV Index:        ' + str(uvIndex))
+    print('')
+    time.sleep(1)

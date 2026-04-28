@@ -42,6 +42,7 @@ THE SOFTWARE.
 # and the concentration in pcs/0.01cf
 
 import time
+
 import grovepi
 
 print("Reading from the Grove Dust Sensor")
@@ -49,17 +50,17 @@ print("Reading from the Grove Dust Sensor")
 # default pin is 2 and default update period is 30000 ms
 grovepi.dust_sensor_en()
 
-time_to_run = 125 # 10 seconds
-start = time.time() # current time in seconds
+time_to_run = 125  # 10 seconds
+start = time.time()  # current time in seconds
 old_val = [0, 0.0, 0.0]
 
 while start + time_to_run > time.time():
 
-	# defaults to pin 2
-	new_val = grovepi.dust_sensor_read()
-	if old_val[0] != new_val[0]:
-		print("LPO time = {:3d} | LPO% = {:5.2f} | pcs/0.01cf = {:6.1f}".format(*new_val))
-		old_val = new_val
+    # defaults to pin 2
+    new_val = grovepi.dust_sensor_read()
+    if old_val[0] != new_val[0]:
+        print("LPO time = {:3d} | LPO% = {:5.2f} | pcs/0.01cf = {:6.1f}".format(*new_val))
+        old_val = new_val
 
 # and disable the interrupt on pin 2
 grovepi.dust_sensor_dis()

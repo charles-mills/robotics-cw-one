@@ -32,17 +32,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-import grove_hightemperature_sensor as grovepi # our library
-from time import sleep # and for the sleep function
-import sys # we need this for the exception throwing stuff
+import sys  # we need this for the exception throwing stuff
+from time import sleep  # and for the sleep function
+
+import grove_hightemperature_sensor as grovepi  # our library
+
 
 # Don't forget to run it with Python 3 !!
 # Don't forget to run it with Python 3 !!
 # Don't forget to run it with Python 3 !!
 
 def Main():
-    room_temperature_pin = 15 # this is equal to A1
-    probe_temperature_pin = 14 # this is equal to A0
+    room_temperature_pin = 15  # this is equal to A1
+    probe_temperature_pin = 14  # this is equal to A0
     # so you have to connect the sensor to A0 port
 
     # instatiate a HighTemperatureSensor object

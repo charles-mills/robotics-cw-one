@@ -34,8 +34,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
-import grovepi
 import math
+
+import grovepi
+
 # Connect the Grove Temperature & Humidity Sensor Pro to digital port D2
 # This example uses the blue colored sensor.
 # SIG,NC,VCC,GND
@@ -43,16 +45,16 @@ sensor = 2  # The Sensor goes on digital port 2.
 
 # temp_humidity_sensor_type
 # Grove Base Kit comes with the blue sensor.
-blue = 0    # The Blue colored sensor.
-white = 1   # The White colored sensor.
+blue = 0  # The Blue colored sensor.
+white = 1  # The White colored sensor.
 
 while True:
     try:
         # This example uses the blue colored sensor. 
         # The first parameter is the port, the second parameter is the type of sensor.
-        [temp,humidity] = grovepi.dht(sensor,blue)  
+        [temp, humidity] = grovepi.dht(sensor, blue)
         if math.isnan(temp) == False and math.isnan(humidity) == False:
-            print("temp = %.02f C humidity =%.02f%%"%(temp, humidity))
+            print("temp = %.02f C humidity =%.02f%%" % (temp, humidity))
 
     except IOError:
-        print ("Error")
+        print("Error")

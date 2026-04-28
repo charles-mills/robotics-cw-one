@@ -38,10 +38,11 @@ THE SOFTWARE.
 '''
 ##################################################
 import lirc
-#initialize the IR daemon
-sockid = lirc.init("keyes", blocking = False)
+
+# initialize the IR daemon
+sockid = lirc.init("keyes", blocking=False)
 while True:
-	#Wait for the next IR code to arrive. The codes are queued in a buffer before printing
-	a= lirc.nextcode()  
-	if len(a) !=0:
-		print(a[0])
+    # Wait for the next IR code to arrive. The codes are queued in a buffer before printing
+    a = lirc.nextcode()
+    if len(a) != 0:
+        print(a[0])

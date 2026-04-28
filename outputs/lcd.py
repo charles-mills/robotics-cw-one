@@ -2,9 +2,9 @@ import time
 from enum import Enum, auto
 
 import RPi.GPIO as GPIO
-from managers.alert_manager import Alert, AlertType
 import smbus
 from managers import AlertManager, SettingsDial
+from managers.alert_manager import Alert, AlertType
 from sensors import Dht
 
 
@@ -150,7 +150,7 @@ class Lcd:
         display_string: str = f"> {current_option_name} \n {next_option_name}"
         self.text_norefresh(display_string)
 
-    def render_alert_notification(self, alert : Alert) -> None:
+    def render_alert_notification(self, alert: Alert) -> None:
         """
         Formats and displays the given alerts caught by the alert managerin the dashboard.
 
@@ -165,7 +165,6 @@ class Lcd:
 
         display_string: str = f"{alert.alert_type}: {alert.timestamp} \n{alert.message}%"
         self.text_norefresh(display_string)
-
 
     @property
     def lcd_state(self) -> LcdState:
@@ -210,7 +209,7 @@ class Lcd:
             elif self.lcd_state == LcdState.ALERT:
                 self.lcd_state = LcdState.DASHBOARD
         else:
-            self.alert_manager.try_resolve_alerts()
+            self.alert_manager.try_resolve_alerts(self.dht._temp, self.dht._humidity)
             self.render_alert_notification(self.alert_manager.current_alert)
 
     def next_setting(self) -> None:

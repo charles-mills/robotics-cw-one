@@ -40,6 +40,7 @@ THE SOFTWARE.
 # (although these can be subsequently changed by utilizing a different parameter for the encoder_en function)
 
 import time
+
 import grovepi
 
 print("Reading from the Grove Encoder")
@@ -47,17 +48,17 @@ print("Reading from the Grove Encoder")
 # default pin is 2 and default number of steps is 32
 grovepi.encoder_en()
 
-time_to_run = 10 # 10 seconds
-start = time.time() # current time in seconds
+time_to_run = 10  # 10 seconds
+start = time.time()  # current time in seconds
 old_val = 0
 
 while start + time_to_run > time.time():
 
-	# defaults to pin 2
-	new_val = grovepi.encoderRead()
-	if old_val != new_val:
-		print("{:3d}/32 position".format(new_val))
-		old_val = new_val
+    # defaults to pin 2
+    new_val = grovepi.encoderRead()
+    if old_val != new_val:
+        print("{:3d}/32 position".format(new_val))
+        old_val = new_val
 
 # and disable the interrupt on pin 2
 grovepi.encoder_dis()

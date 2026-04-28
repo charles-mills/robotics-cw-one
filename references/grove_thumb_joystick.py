@@ -34,6 +34,7 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # Connect the Grove Thumb Joystick to analog port A0
@@ -50,8 +51,8 @@ import grovepi
 # This configuration means you are using port A0
 xPin = 0
 yPin = 1
-grovepi.pinMode(xPin,"INPUT")
-grovepi.pinMode(yPin,"INPUT")
+grovepi.pinMode(xPin, "INPUT")
+grovepi.pinMode(yPin, "INPUT")
 
 # The Grove Thumb Joystick is an analog device that outputs analog signal ranging from 0 to 1023
 # The X and Y axes are two ~10k potentiometers and a momentary push button which shorts the x axis
@@ -86,4 +87,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

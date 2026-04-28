@@ -47,15 +47,14 @@ THE SOFTWARE.
 # http://www.seeedstudio.com/wiki/Grove_-_Gas_Sensor(O%E2%82%82)
 
 import time
+
 import grovepi
-
-
 
 # Connect the Grove Gas Sensor to analog port A0
 # SIG,NC,VCC,GND
 gas_sensor = 0
 
-grovepi.pinMode(gas_sensor,"INPUT")
+grovepi.pinMode(gas_sensor, "INPUT")
 
 while True:
     try:
@@ -69,4 +68,4 @@ while True:
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

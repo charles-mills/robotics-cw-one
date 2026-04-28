@@ -1,6 +1,7 @@
 Library written for **Python 3**!
 
 Possible fault warnings:
+
 * undervoltage lockout
 * overcurrent event
 * extended current limit event
@@ -8,6 +9,7 @@ Possible fault warnings:
 * unknown condition
 
 Available commands for the Grove Mini Motor Driver:
+
 * `moveForward(speed)` : speed = `0-100`%
 * `moveBackwards(speed)` : speed = `0-100`%
 * `setLeftMotor(direction, speed)` : direction = `'FORWARD'`/`'REVERSE'`; speed = `0-100`%

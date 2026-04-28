@@ -1,9 +1,7 @@
-from time import sleep # we need to use the sleep function to delay readings
-import datetime # that's for printing the current date
-import time
-import grovepi
-import math
 import json
+import time
+
+import grovepi
 
 dht_sensor = 7
 ultrasonic_ranger = 5
@@ -17,9 +15,9 @@ ir = 8
 val = 0
 
 # grovepi.additional_waiting = 0.005
-grovepi.pinMode(sound_sensor,"INPUT")
-grovepi.pinMode(button,"INPUT")
-grovepi.pinMode(light_sensor,"INPUT")
+grovepi.pinMode(sound_sensor, "INPUT")
+grovepi.pinMode(button, "INPUT")
+grovepi.pinMode(light_sensor, "INPUT")
 grovepi.pinMode(led, "OUTPUT")
 grovepi.dust_sensor_en()
 grovepi.setDustSensorInterval(5000)

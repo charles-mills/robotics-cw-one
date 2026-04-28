@@ -35,6 +35,7 @@ THE SOFTWARE.
 '''
 
 import time
+
 import grovepi
 
 # The electromagnet can hold a 1KG weight
@@ -43,23 +44,23 @@ import grovepi
 # SIG,NC,VCC,GND
 electromagnet = 4
 
-grovepi.pinMode(electromagnet,"OUTPUT")
+grovepi.pinMode(electromagnet, "OUTPUT")
 time.sleep(1)
 
 while True:
     try:
         # Switch on electromagnet
-        grovepi.digitalWrite(electromagnet,1)
-        print ("on")
+        grovepi.digitalWrite(electromagnet, 1)
+        print("on")
         time.sleep(2)
 
         # Switch off electromagnet
-        grovepi.digitalWrite(electromagnet,0)
-        print ("off")
+        grovepi.digitalWrite(electromagnet, 0)
+        print("off")
         time.sleep(2)
 
     except KeyboardInterrupt:
-        grovepi.digitalWrite(electromagnet,0)
+        grovepi.digitalWrite(electromagnet, 0)
         break
     except IOError:
-        print ("Error")
+        print("Error")

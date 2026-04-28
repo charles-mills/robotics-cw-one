@@ -1,11 +1,14 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GrovePi/blob/master/LICENSE
 
-import grovepi
-import math
 import json
+import math
+
 import numpy as np
 from scipy.interpolate import interp1d
+
+import grovepi
+
 
 # Library written for Python 3!
 
@@ -16,9 +19,9 @@ from scipy.interpolate import interp1d
 class HighTemperatureSensor:
 
     # initialize the object with the appropriate sensor pins on the GrovePi and configuration JSON
-    def __init__(self, _temperature_pin, _thermocouple_pin, _json_path = None):
+    def __init__(self, _temperature_pin, _thermocouple_pin, _json_path=None):
 
-        if(_json_path is None):
+        if (_json_path is None):
             _json_path = 'thermocouple_table.json'
 
         try:
@@ -104,7 +107,6 @@ class HighTemperatureSensor:
         probe_tip_voltage = (analog_value - self.__vol_offset) / self.__amp_av
 
         return probe_tip_voltage
-
 
     # function for interpolating values from [table] array
     def __interpolateTable(self, table):

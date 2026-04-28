@@ -38,8 +38,8 @@ THE SOFTWARE.
 '''
 
 import time
-import grovepi
 
+import grovepi
 
 # Connect the Grove Sound Sensor to analog port A0
 # SIG,NC,VCC,GND
@@ -49,8 +49,8 @@ sound_sensor = 0
 # SIG,NC,VCC,GND
 led = 5
 
-grovepi.pinMode(sound_sensor,"INPUT")
-grovepi.pinMode(led,"OUTPUT")
+grovepi.pinMode(sound_sensor, "INPUT")
+grovepi.pinMode(led, "OUTPUT")
 
 # The threshold to turn the led on 400.00 * 5 / 1024 = 1.95v
 threshold_value = 600
@@ -62,12 +62,12 @@ while True:
 
         # If loud, illuminate LED, otherwise dim
         if sensor_value > threshold_value:
-            grovepi.digitalWrite(led,1)
+            grovepi.digitalWrite(led, 1)
         else:
-            grovepi.digitalWrite(led,0)
+            grovepi.digitalWrite(led, 0)
 
-        print("sensor_value = %d" %sensor_value)
+        print("sensor_value = %d" % sensor_value)
         time.sleep(.5)
 
     except IOError:
-        print ("Error")
+        print("Error")

@@ -39,34 +39,35 @@ THE SOFTWARE.
 # 	One side for power source and the other side for the device you want to control.
 
 import time
+
 import grovepi
 
 # Connect the Grove MOSFET to analog port D6
 # SIG,NC,VCC,GND
 mosfet = 6
 
-grovepi.pinMode(mosfet,"OUTPUT")
+grovepi.pinMode(mosfet, "OUTPUT")
 time.sleep(1)
 
 while True:
     try:
         # Full speed
-        grovepi.analogWrite(mosfet,255)
-        print ("full speed")
+        grovepi.analogWrite(mosfet, 255)
+        print("full speed")
         time.sleep(2)
 
         # Half speed
-        grovepi.analogWrite(mosfet,128)
-        print ("half speed")
+        grovepi.analogWrite(mosfet, 128)
+        print("half speed")
         time.sleep(2)
 
         # Off
-        grovepi.analogWrite(mosfet,0)
-        print ("off")
+        grovepi.analogWrite(mosfet, 0)
+        print("off")
         time.sleep(2)
 
     except KeyboardInterrupt:
-        grovepi.analogWrite(mosfet,0)
+        grovepi.analogWrite(mosfet, 0)
         break
     except IOError:
-        print ("Error")
+        print("Error")

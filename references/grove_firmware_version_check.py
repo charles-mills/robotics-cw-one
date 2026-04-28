@@ -37,9 +37,9 @@ THE SOFTWARE.
 import grovepi
 
 try:
-    print("GrovePi has firmware version: %s" %grovepi.version())
+    print("GrovePi has firmware version: %s" % grovepi.version())
 
 except KeyboardInterrupt:
-    print ("KeyboardInterrupt")
+    print("KeyboardInterrupt")
 except IOError:
-   print ("Error")
+    print("Error")

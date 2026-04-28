@@ -20,44 +20,43 @@
 # THE SOFTWARE.
 import time
 
-
 # Register addresses.
 MPR121_I2CADDR_DEFAULT = 0x5A
-MPR121_TOUCHSTATUS_L   = 0x00
-MPR121_TOUCHSTATUS_H   = 0x01
-MPR121_FILTDATA_0L     = 0x04
-MPR121_FILTDATA_0H     = 0x05
-MPR121_BASELINE_0      = 0x1E
-MPR121_MHDR            = 0x2B
-MPR121_NHDR            = 0x2C
-MPR121_NCLR            = 0x2D
-MPR121_FDLR            = 0x2E
-MPR121_MHDF            = 0x2F
-MPR121_NHDF            = 0x30
-MPR121_NCLF            = 0x31
-MPR121_FDLF            = 0x32
-MPR121_NHDT            = 0x33
-MPR121_NCLT            = 0x34
-MPR121_FDLT            = 0x35
-MPR121_TOUCHTH_0       = 0x41
-MPR121_RELEASETH_0     = 0x42
-MPR121_DEBOUNCE        = 0x5B
-MPR121_CONFIG1         = 0x5C
-MPR121_CONFIG2         = 0x5D
-MPR121_CHARGECURR_0    = 0x5F
-MPR121_CHARGETIME_1    = 0x6C
-MPR121_ECR             = 0x5E
-MPR121_AUTOCONFIG0     = 0x7B
-MPR121_AUTOCONFIG1     = 0x7C
-MPR121_UPLIMIT         = 0x7D
-MPR121_LOWLIMIT        = 0x7E
-MPR121_TARGETLIMIT     = 0x7F
-MPR121_GPIODIR         = 0x76
-MPR121_GPIOEN          = 0x77
-MPR121_GPIOSET         = 0x78
-MPR121_GPIOCLR         = 0x79
-MPR121_GPIOTOGGLE      = 0x7A
-MPR121_SOFTRESET       = 0x80
+MPR121_TOUCHSTATUS_L = 0x00
+MPR121_TOUCHSTATUS_H = 0x01
+MPR121_FILTDATA_0L = 0x04
+MPR121_FILTDATA_0H = 0x05
+MPR121_BASELINE_0 = 0x1E
+MPR121_MHDR = 0x2B
+MPR121_NHDR = 0x2C
+MPR121_NCLR = 0x2D
+MPR121_FDLR = 0x2E
+MPR121_MHDF = 0x2F
+MPR121_NHDF = 0x30
+MPR121_NCLF = 0x31
+MPR121_FDLF = 0x32
+MPR121_NHDT = 0x33
+MPR121_NCLT = 0x34
+MPR121_FDLT = 0x35
+MPR121_TOUCHTH_0 = 0x41
+MPR121_RELEASETH_0 = 0x42
+MPR121_DEBOUNCE = 0x5B
+MPR121_CONFIG1 = 0x5C
+MPR121_CONFIG2 = 0x5D
+MPR121_CHARGECURR_0 = 0x5F
+MPR121_CHARGETIME_1 = 0x6C
+MPR121_ECR = 0x5E
+MPR121_AUTOCONFIG0 = 0x7B
+MPR121_AUTOCONFIG1 = 0x7C
+MPR121_UPLIMIT = 0x7D
+MPR121_LOWLIMIT = 0x7E
+MPR121_TARGETLIMIT = 0x7F
+MPR121_GPIODIR = 0x76
+MPR121_GPIOEN = 0x77
+MPR121_GPIOSET = 0x78
+MPR121_GPIOCLR = 0x79
+MPR121_GPIOTOGGLE = 0x7A
+MPR121_SOFTRESET = 0x80
 
 MAX_I2C_RETRIES = 5
 
@@ -79,7 +78,7 @@ class MPR121(object):
 
         Returns True if communication with the MPR121 was established, otherwise
         returns False.
-        """        
+        """
         # Assume we're using platform's default I2C bus if none is specified.
         if i2c is None:
             import I2C
@@ -95,13 +94,13 @@ class MPR121(object):
     def _reset(self):
         # Soft reset of device.
         self._i2c_retry(self._device.write8, MPR121_SOFTRESET, 0x63)
-        time.sleep(0.001) # This 1ms delay here probably isn't necessary but can't hurt.
+        time.sleep(0.001)  # This 1ms delay here probably isn't necessary but can't hurt.
         # Set electrode configuration to default values.
         self._i2c_retry(self._device.write8, MPR121_ECR, 0x00)
         # Check CDT, SFI, ESI configuration is at default values.
         c = self._i2c_retry(self._device.readU8, MPR121_CONFIG2)
         if c != 0x24:
-           return False
+            return False
         # Set threshold for touch and release to default values.
         self.set_thresholds(12, 6)
         # Configure baseline filtering control registers.
@@ -118,10 +117,10 @@ class MPR121(object):
         self._i2c_retry(self._device.write8, MPR121_FDLT, 0x00)
         # Set other configuration registers.
         self._i2c_retry(self._device.write8, MPR121_DEBOUNCE, 0)
-        self._i2c_retry(self._device.write8, MPR121_CONFIG1, 0x10) # default, 16uA charge current
-        self._i2c_retry(self._device.write8, MPR121_CONFIG2, 0x20) # 0.5uS encoding, 1ms period
+        self._i2c_retry(self._device.write8, MPR121_CONFIG1, 0x10)  # default, 16uA charge current
+        self._i2c_retry(self._device.write8, MPR121_CONFIG2, 0x20)  # 0.5uS encoding, 1ms period
         # Enable all electrodes.
-        self._i2c_retry(self._device.write8, MPR121_ECR, 0x8F) # start with first 5 bits of baseline tracking
+        self._i2c_retry(self._device.write8, MPR121_ECR, 0x8F)  # start with first 5 bits of baseline tracking
         # All done, everything succeeded!
         return True
 
@@ -154,15 +153,15 @@ class MPR121(object):
         assert release >= 0 and release <= 255, 'release must be between 0-255 (inclusive)'
         # Set the touch and release register value for all the inputs.
         for i in range(12):
-            self._i2c_retry(self._device.write8, MPR121_TOUCHTH_0 + 2*i, touch)
-            self._i2c_retry(self._device.write8, MPR121_RELEASETH_0 + 2*i, release)
+            self._i2c_retry(self._device.write8, MPR121_TOUCHTH_0 + 2 * i, touch)
+            self._i2c_retry(self._device.write8, MPR121_RELEASETH_0 + 2 * i, release)
 
     def filtered_data(self, pin):
         """Return filtered data register value for the provided pin (0-11).
         Useful for debugging.
         """
         assert pin >= 0 and pin < 12, 'pin must be between 0-11 (inclusive)'
-        return self._i2c_retry(self._device.readU16LE, MPR121_FILTDATA_0L + pin*2)
+        return self._i2c_retry(self._device.readU16LE, MPR121_FILTDATA_0L + pin * 2)
 
     def baseline_data(self, pin):
         """Return baseline data register value for the provided pin (0-11).

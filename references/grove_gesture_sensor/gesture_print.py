@@ -34,11 +34,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
-import grove_gesture_sensor
 import time
 
-g=grove_gesture_sensor.gesture()
+import grove_gesture_sensor
+
+g = grove_gesture_sensor.gesture()
 g.init()
 while True:
-	g.print_gesture()
-	time.sleep(.1)
+    g.print_gesture()
+    time.sleep(.1)

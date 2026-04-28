@@ -12,9 +12,10 @@
 # Released under the MIT license (http://choosealicense.com/licenses/mit/).
 # For more information see https://github.com/DexterInd/GrovePi/blob/master/LICENSE
 
-import smbus
-import RPi.GPIO as GPIO
 import time
+
+import RPi.GPIO as GPIO
+import smbus
 
 rev = GPIO.RPI_REVISION
 if rev == 2 or rev == 3:
@@ -22,10 +23,12 @@ if rev == 2 or rev == 3:
 else:
     bus = smbus.SMBus(0)
 
+
 class HDC1000:
     I2C_ADDR = 0
+
     def __init__(self):
-        self.I2C_ADDR=0x40
+        self.I2C_ADDR = 0x40
 
     def Config(self):
         # HDC1000 address, 0x40(64)
@@ -34,8 +37,8 @@ class HDC1000:
         bus.write_byte_data(self.I2C_ADDR, 0x02, 0x30)
 
     def Temperature(self):
-        try :
-            bus.write_byte(self.I2C_ADDR,0x00)
+        try:
+            bus.write_byte(self.I2C_ADDR, 0x00)
             time.sleep(0.50)
 
             # Read data back, 2 bytes
@@ -53,8 +56,8 @@ class HDC1000:
             self.Temperature()
 
     def Humidity(self):
-        try :
-            bus.write_byte(self.I2C_ADDR,0x01)
+        try:
+            bus.write_byte(self.I2C_ADDR, 0x01)
             time.sleep(0.50)
 
             # Read data back, 2 bytes

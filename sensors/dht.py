@@ -27,7 +27,8 @@ class Dht:
         else:
             self.alert_manager.auto_resolve_alert(AlertType.HIGH_HUM)
 
-    def get_value(self) -> tuple[float, float]:
+    # tuple[] is not compatible with the Python version of the GrovePi
+    def get_value(self):  # -> tuple[float, float]:
         # [temp, humidity] = grovepi.dht(self.port, type)
         return grovepi.dht(self.port, self.type)
 

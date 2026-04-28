@@ -31,10 +31,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
+import sys
+from time import sleep
+
 from grove_mini_motor_driver import MiniMotorDriver
 from grove_mini_motor_driver import left_channel, right_channel
-from time import sleep
-import sys
+
 
 # if you use the incorporated feedbacker (aka setDisplayFaults)
 # whenever there's a shortage of current or if the motors stalls
@@ -108,6 +110,7 @@ def Main():
     # because it just cuts power definitely and
     # puts the motor driver in a low-power state
     driver.disableMotors()
+
 
 if __name__ == "__main__":
     try:

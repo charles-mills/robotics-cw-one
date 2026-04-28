@@ -34,8 +34,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-from grove_i2c_temp_hum_hdc1000 import HDC1000
 import time
+
+from grove_i2c_temp_hum_hdc1000 import HDC1000
 
 hdc = HDC1000()
 hdc.Config()

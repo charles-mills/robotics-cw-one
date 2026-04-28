@@ -36,7 +36,8 @@ THE SOFTWARE.
 # NOTE:
 # The software for this sensor is still in development and might make your GrovePi unuable as long as this sensor is connected with the GrovePi
 #################################################################################################################################################
-import time,sys
+import time
+
 import RPi.GPIO as GPIO
 import smbus
 
@@ -47,19 +48,21 @@ if rev == 2 or rev == 3:
 else:
     bus = smbus.SMBus(0)
 
+
 class grove_fingerclip_heart_sensor:
-	address = 0x50
+    address = 0x50
 
-	def pulse_read(self):
-		print(bus.read_byte(0x50))
-		# return bus.read_i2c_block_data(self.address, 1,1)
+    def pulse_read(self):
+        print(bus.read_byte(0x50))
+    # return bus.read_i2c_block_data(self.address, 1,1)
 
-if __name__ == "__main__":		
-	
-	pulse= grove_fingerclip_heart_sensor()
-	while True:
-		try:
-			pulse.pulse_read()
-		except IOError:
-			print("Error")
-		time.sleep(.5)
+
+if __name__ == "__main__":
+
+    pulse = grove_fingerclip_heart_sensor()
+    while True:
+        try:
+            pulse.pulse_read()
+        except IOError:
+            print("Error")
+        time.sleep(.5)

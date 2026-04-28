@@ -32,25 +32,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 '''
 
-from grove_dht import Dht # from a custom made grovepi-based library import our needed class
-from time import sleep # we need to use the sleep function to delay readings
+from time import sleep  # we need to use the sleep function to delay readings
+
+from grove_dht import Dht  # from a custom made grovepi-based library import our needed class
 
 # Don't forget to run it with Python 3 !!
 # Don't forget to run it with Python 3 !!
 # Don't forget to run it with Python 3 !!
 
-dht_pin = 4 # use Digital Port 4 found on GrovePi
-dht_sensor = Dht(dht_pin) # instantiate a dht class with the appropriate pin
+dht_pin = 4  # use Digital Port 4 found on GrovePi
+dht_sensor = Dht(dht_pin)  # instantiate a dht class with the appropriate pin
 
-dht_sensor.start() # start collecting from the DHT sensor
+dht_sensor.start()  # start collecting from the DHT sensor
 
 try:
     # do this indefinitely
     while True:
-
-        print(dht_sensor) # prints values in a nice format
-        sleep(0.8) # wait around 800 ms before the next iteration
+        print(dht_sensor)  # prints values in a nice format
+        sleep(0.8)  # wait around 800 ms before the next iteration
 
 # when pressing CTRL-C
 except KeyboardInterrupt:
-    dht_sensor.stop() # stop gathering data
+    dht_sensor.stop()  # stop gathering data
