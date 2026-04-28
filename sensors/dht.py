@@ -13,9 +13,30 @@ class Dht:
         self.alert_manager: AlertManager = alert_manager
         self._temp: float = 0
         self._humidity: float = 0
+        self._last_temp: float = 0
+        self._last_humidity: float = 0
+
+        # Might not need these but thought it could be useful if we had some way of checking that we're using a fallback.
+        self._using_last_temp: bool = False
+        self._using_last_humidity:bool = False
 
     def tick(self) -> None:
+        self._last_temp = self._temp
+        self._last_humidity = self._humidity
+
         self._temp, self._humidity = grovepi.dht(self.port, self.type)
+
+        if self._humidity < 0 or self._humidity > 100:
+            self.humidity = self._last_humidity
+            self._using_last_humidity = True
+        else:
+            self._using_last_humidity = False
+
+        if self._temp < -100 or self._temp > 100:
+            self._temp = self._last_temp
+            self._using_last_temp = True
+        else:
+            self._using_last_temp = False
 
         if self._temp > HIGH_TEMP_C:
             self.alert_manager.trigger_alert(AlertType.HIGH_TEMP, "Temp warning")
