@@ -23,6 +23,8 @@ class Ultrasonic:
         self.port: int = port
         self.baseline: float = -1.0
         self.alert_manager: AlertManager = alert_manager
+        self._detection_timer: float = 0.0
+        self._currently_detected: bool = False
 
     def establish_baseline_distance(self, seconds_to_read_for: float = 5.0) -> bool:
         """
@@ -67,8 +69,18 @@ class Ultrasonic:
         Returns: True if the reading of the ultrasonic ranger is below the established baseline, False otherwise.
 
         """
-        return self.get_value() < self.baseline
+        return self.get_value() < (self.baseline - 5.0)
 
     def tick(self) -> None:
         if self.is_detected():
-            self.alert_manager.trigger_alert(AlertType.MOTION, "Motion detected", True)
+            if not self._currently_detected:
+                self._currently_detected = True
+                self._detection_timer = time.monotonic()
+
+            elif time.monotonic() - self._detection_timer >= 0.3:
+                self.alert_manager.trigger_alert(AlertType.MOTION, "Motion detected", True) 
+                self._detection_timer = time.monotonic()
+
+        else:
+            self._currently_detected = False
+ 
