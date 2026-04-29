@@ -22,8 +22,8 @@ class SettingsOption(Enum):
 
 class Lcd:
     def __init__(self, alert_manager: AlertManager, dht: Dht, settings_dial: SettingsDial) -> None:
-        self.rgbAddr: int = 0x62
-        self.txtAddr: int = 0x3e
+        self.DISPLAY_RGB_ADDR: int = 0x62
+        self.DISPLAY_TEXT_ADDR: int = 0x3e
         self._lcd_state: LcdState = LcdState.DASHBOARD
         self.lcd_state_timer: int = 4
         self._current_settings_option: list[SettingsOption] = list(SettingsOption)
@@ -42,12 +42,12 @@ class Lcd:
             self.bus = smbus.SMBus(0)
 
     def set_rgb(self, r: int, g: int, b: int) -> None:
-        self.bus.write_byte_data(self.rgbAddr, 0, 0)
-        self.bus.write_byte_data(self.rgbAddr, 1, 0)
-        self.bus.write_byte_data(self.rgbAddr, 0x08, 0xaa)
-        self.bus.write_byte_data(self.rgbAddr, 4, r)
-        self.bus.write_byte_data(self.rgbAddr, 3, g)
-        self.bus.write_byte_data(self.rgbAddr, 2, b)
+        self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 0, 0)
+        self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 1, 0)
+        self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 0x08, 0xaa)
+        self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 4, r)
+        self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 3, g)
+        self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 2, b)
 
     # Don't think these are needed for the LCD
     # def get_value(self) -> int:
@@ -66,7 +66,7 @@ class Lcd:
         Returns:
             None
         """
-        self.bus.write_byte_data(self.txtAddr, 0x80, cmd)
+        self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x80, cmd)
 
     def clear_display(self) -> bool:
         self.text_command(0x01)
@@ -112,7 +112,7 @@ class Lcd:
                     continue
 
             count += 1
-            self.bus.write_byte_data(self.txtAddr, 0x40, ord(c))
+            self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
 
     def render_dashboard(self, temp: float, humidity: float) -> None:
         """
@@ -126,7 +126,7 @@ class Lcd:
             None
         """
 
-        display_string: str = f"Temp:{temp:.1f}C Hum:{humidity:.0f}%"
+        display_string: str = f"Temp:{temp:.1f}C \n Hum:{humidity:.0f}%"
         self.text_no_refresh(display_string)
 
     def render_settings_option(self) -> None:
