@@ -1,9 +1,8 @@
+import math
+import config
+
 import grovepi
 from managers import AlertManager, AlertType
-
-HIGH_TEMP_C: float = 28
-HIGH_HUMIDITY_PERCENT: float = 60
-
 
 class Dht:
     def __init__(self, port: int, alert_manager: AlertManager):
@@ -26,24 +25,24 @@ class Dht:
 
         self._temp, self._humidity = grovepi.dht(self.port, self.type)
 
-        if self._humidity < 0 or self._humidity > 100:
-            self.humidity = self._last_humidity
+        if self._humidity < 0 or self._humidity > 100 or math.isnan(self._humidity):
+            self._humidity = self._last_humidity
             self._using_last_humidity = True
         else:
             self._using_last_humidity = False
 
-        if self._temp < -100 or self._temp > 100:
+        if self._temp < -100 or self._temp > 100 or math.isnan(self._temp):
             self._temp = self._last_temp
             self._using_last_temp = True
         else:
             self._using_last_temp = False
 
-        if self._temp > HIGH_TEMP_C:
+        if self._temp > config.HIGH_TEMP_C:
             self.alert_manager.trigger_alert(AlertType.HIGH_TEMP, "Temp warning", False)
         else:
             self.alert_manager.auto_resolve_alert(AlertType.HIGH_TEMP)
 
-        if self._humidity > HIGH_HUMIDITY_PERCENT:
+        if self._humidity > config.HIGH_HUMIDITY_PERCENT:
             self.alert_manager.trigger_alert(AlertType.HIGH_HUM, "Humidity warning", False)
         else:
             self.alert_manager.auto_resolve_alert(AlertType.HIGH_HUM)

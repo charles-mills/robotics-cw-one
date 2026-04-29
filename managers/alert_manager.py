@@ -2,6 +2,8 @@ import time
 from dataclasses import dataclass
 from enum import Enum, auto
 
+import config
+
 
 class AlertType(Enum):
     MOTION = auto()
@@ -13,8 +15,8 @@ class AlertType(Enum):
 class Alert:
     alert_type: AlertType
     message: str
-    dimissal_required: bool
-    timestamp: float = time.time()
+    dismissal_required: bool
+    timestamp: float = time.strftime("%H:%M", time.localtime())
 
 
 class AlertManager:
@@ -22,7 +24,7 @@ class AlertManager:
     def __init__(self):
         self._active_alerts: list[Alert] = []
 
-    def trigger_alert(self, alert_type: AlertType, message: str, dimissal_required: bool) -> None:
+    def trigger_alert(self, alert_type: AlertType, message: str, dismissal_required: bool) -> None:
         """
         Inserts a new alert into the list of active alerts.
         The start of the list represents the latest alert.
@@ -30,14 +32,14 @@ class AlertManager:
         Args:
             alert_type (AlertType): What kind of alert it is e.g. Temperature, motion detected etc.
             message (str): What string should be displayed along with the alert.
-            dimissal_required (bool): Should the user be able to dismiss the alert.
+            dismissal_required (bool): Should the user be able to dismiss the alert.
         """
 
         for alert in self._active_alerts:
             if alert.alert_type == alert_type:
                 return
 
-        new_alert = Alert(alert_type, message, dimissal_required)
+        new_alert = Alert(alert_type, message, dismissal_required)
         self._active_alerts.insert(0, new_alert)
 
     def auto_resolve_alert(self, alert_type: AlertType) -> None:
@@ -57,9 +59,9 @@ class AlertManager:
         """
 
         ## CHECK THESE OUT
-        if dht_temp > 80.0:
+        if dht_temp > config.TEMPERATURE_RESOLVE_THRESHOLD:
             self.auto_resolve_alert(AlertType.HIGH_TEMP)
-        if dht_humidity > 80.0:
+        if dht_humidity > config.HUMIDITY_RESOLVE_THRESHOLD:
             self.auto_resolve_alert(AlertType.HIGH_HUM)
 
     @property
@@ -92,5 +94,9 @@ class AlertManager:
         
         current_alert_to_display = self._active_alerts[0]
 
-        if current_alert_to_display.dimissal_required:
+        if current_alert_to_display.dismissal_required:
             self._active_alerts.pop(0)
+
+    @property
+    def active_alerts(self):
+        return self._active_alerts

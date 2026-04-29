@@ -34,8 +34,10 @@ class Main:
                 time.sleep(0.1)
 
             except IOError:
+                self.lcd.clear_display()
                 traceback.print_exc()
             except KeyboardInterrupt:
+                self.lcd.clear_display()
                 pass
 
 

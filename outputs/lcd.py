@@ -4,7 +4,7 @@ from enum import Enum, auto
 import RPi.GPIO as GPIO
 import smbus
 from managers import AlertManager, SettingsDial
-from managers.alert_manager import Alert, AlertType
+from managers.alert_manager import Alert
 from sensors import Dht
 
 
@@ -28,7 +28,7 @@ class Lcd:
         self.lcd_state_timer: int = 4
         self._current_settings_option: list[SettingsOption] = list(SettingsOption)
         self._current_option_index: int = 0
-        self._current_string_depth: int = 0
+        self._current_string_index: int = 0
 
         self.alert_manager: AlertManager = alert_manager
         self.dht: Dht = dht
@@ -49,7 +49,7 @@ class Lcd:
         self.bus.write_byte_data(self.rgbAddr, 3, g)
         self.bus.write_byte_data(self.rgbAddr, 2, b)
 
-    # Dont think these are needed for the LCD
+    # Don't think these are needed for the LCD
     # def get_value(self) -> int:
     #     return grovepi.analogRead(self.port)
 
@@ -58,7 +58,7 @@ class Lcd:
 
     def text_command(self, cmd: int) -> None:
         """
-        Sends a instruction to the screen.
+        Sends an instruction to the screen.
 
         Args:
             cmd (int): The hexadecimal command code that needs to be executed.
@@ -68,7 +68,12 @@ class Lcd:
         """
         self.bus.write_byte_data(self.txtAddr, 0x80, cmd)
 
-    def text_norefresh(self, text: str) -> None:
+    def clear_display(self) -> bool:
+        self.text_command(0x01)
+        self.set_rgb(0, 0, 0)
+        return True
+
+    def text_no_refresh(self, text: str) -> None:
         """
         Writes a string to the LCD without clearing the screen
         which prevents the screen from flickering when updating.
@@ -116,14 +121,13 @@ class Lcd:
         Args:
             temp (float): The current temperature.
             humidity (float): The current humidity.
-            alerts (int): The number of active alerts.
 
         Returns:
             None
         """
 
         display_string: str = f"Temp:{temp:.1f}C Hum:{humidity:.0f}%"
-        self.text_norefresh(display_string)
+        self.text_no_refresh(display_string)
 
     def render_settings_option(self) -> None:
         """
@@ -139,14 +143,15 @@ class Lcd:
         next_option_index: int = (self._current_option_index + 1) % len(self._current_settings_option)
         next_option_name: str = self._current_settings_option[next_option_index].name
 
+        # Find nice colour again
         self.set_rgb(0, 0, 255)
 
         display_string: str = f"> {current_option_name} \n {next_option_name}"
-        self.text_norefresh(display_string)
+        self.text_no_refresh(display_string)
 
     def render_alert_notification(self, alert: Alert) -> None:
         """
-        Formats and displays the given alerts caught by the alert managerin the dashboard.
+        Formats and displays the given alerts caught by the alert manager the dashboard.
 
         Args:
             alert (Alert): the alert to be displayed
@@ -157,18 +162,17 @@ class Lcd:
 
         self.set_rgb(255, 0, 0)
 
-        display_string: str = f"{alert.alert_type.name}: {alert.timestamp} \n{self.cycle_through_string(alert.message)}"
-        self.text_norefresh(display_string)
+        display_string: str = f"{alert.alert_type.name}: {alert.timestamp}\n{self.cycle_through_string(alert.message)}"
+        self.text_no_refresh(display_string)
 
-    def cycle_through_string(self, str: str) -> str:
-        str_len: int = len(str)
-        if str_len <= 12:
-            return str
-        self._current_string_depth = self._current_string_depth + 1
-        
-        return str[(self._current_string_depth % str_len):((self._current_string_depth + 12) % str_len)]
-        
+    def cycle_through_string(self, text: str, window_size: int = 12) -> str:
+        text_len: int = len(str)
 
+        if text_len <= window_size:
+            return text
+
+        self._current_string_index = (self._current_string_index + 1) % text_len
+        return (text + text)[self._current_string_index:self._current_string_index + window_size]
 
     @property
     def lcd_state(self) -> LcdState:
@@ -191,9 +195,8 @@ class Lcd:
         elif self._lcd_state == LcdState.SETTINGS:
             pass
 
-
     def tick(self):
-        if len(self.alert_manager._active_alerts) == 0:
+        if len(self.alert_manager.active_alerts) == 0:
             if self.lcd_state == LcdState.DASHBOARD:
                 self.lcd_state_timer = 4
                 # Should we be using parameters here? It's all internal
