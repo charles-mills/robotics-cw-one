@@ -166,7 +166,7 @@ class Lcd:
         self.text_no_refresh(display_string)
 
     def cycle_through_string(self, text: str, window_size: int = 12) -> str:
-        text_len: int = len(str)
+        text_len: int = len(text)
 
         if text_len <= window_size:
             return text

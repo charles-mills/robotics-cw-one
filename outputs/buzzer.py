@@ -1,3 +1,4 @@
+import config
 import grovepi
 
 from managers import AlertManager
@@ -38,10 +39,10 @@ class Buzzer:
             None
         """
 
-        if is_on:
-            grovepi.digitalWrite(self.port, 1)
-        else:
+        if not config.ALARM_SOUNDS or not is_on:
             grovepi.digitalWrite(self.port, 0)
+        else:
+            grovepi.digitalWrite(self.port, 1)
 
     
     def tick(self):
