@@ -1,5 +1,4 @@
 import threading
-import time
 import traceback
 
 from inputs import SelectButton, CycleButton
@@ -30,49 +29,56 @@ class Main:
         self.components = self.input_components + self.sensor_components + self.output_components
         self.threads = []
 
-        self.threads.append(threading.Thread(target=self.input_ticks(), kwargs={"delay": 2}))
-        self.threads.append(threading.Thread(target=self.sensor_ticks(), kwargs={"delay": 2}))
-        self.threads.append(threading.Thread(target=self.output_ticks(), kwargs={"delay": 2}))
+        self.threads.append(threading.Thread(target=self.input_ticks))
+        self.threads.append(threading.Thread(target=self.sensor_ticks))
+        self.threads.append(threading.Thread(target=self.output_ticks))
 
     def main(self):
         self.ultrasonic.establish_baseline_distance()
 
+        try:
+            for t in self.threads:
+                t.start()
+
+            for t in self.threads:
+                t.join()
+        except IOError:
+            self.lcd.clear_display()
+            traceback.print_exc()
+        except KeyboardInterrupt:
+            self.lcd.clear_display()
+            pass
+
+    def input_ticks(self) -> None:
+        print("Starting input thread")
+
         while True:
-            try:
-                for t in self.threads:
-                    t.start()
+            for comp in self.input_components:
+                comp.tick()
 
-                if self.alert_manager.total_alert != 0:
-                    self.lcd.set_rgb(255, 0, 0)
-                else:
-                    self.lcd.set_rgb(0, 255, 0)
+    def output_ticks(self) -> None:
+        print("Starting output thread")
 
-                for t in self.threads:
-                    t.join()
-            except IOError:
-                self.lcd.clear_display()
-                traceback.print_exc()
-            except KeyboardInterrupt:
-                self.lcd.clear_display()
-                pass
+        while True:
+            for comp in self.output_components:
+                comp.tick()
 
-    def input_ticks(self) -> bool:
-        for comp in self.input_components:
-            comp.tick()
+            if self.alert_manager.total_alert != 0:
+                self.lcd.set_rgb(255, 0, 0)
+            else:
+                self.lcd.set_rgb(0, 255, 0)
 
-        return True
+            print(f"Output log:\nTotal alerts: {self.alert_manager.total_alert}\n")
 
-    def output_ticks(self) -> bool:
-        for comp in self.output_components:
-            comp.tick()
+    def sensor_ticks(self) -> None:
+        print("Starting sensor thread")
 
-        return True
+        while True:
+            for comp in self.sensor_components:
+                comp.tick()
 
-    def sensor_ticks(self) -> bool:
-        for comp in self.sensor_components:
-            comp.tick()
+            print(f"Sensor log:\nUltrasonic: {self.ultrasonic.get_value()}\nDHT: {self.dht.get_value()}\n")
 
-        return True
 
 
 if __name__ == "__main__":
