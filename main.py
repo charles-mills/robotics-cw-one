@@ -33,6 +33,11 @@ class Main:
                     component.tick()
                 time.sleep(0.1)
 
+                if self.alert_manager.total_alert != 0:
+                    self.lcd.set_rgb(255, 0 , 0)
+                else:
+                    self.lcd.set_rgb(0, 255, 0)
+
             except IOError:
                 self.lcd.clear_display()
                 traceback.print_exc()

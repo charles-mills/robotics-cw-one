@@ -143,9 +143,6 @@ class Lcd:
         next_option_index: int = (self._current_option_index + 1) % len(self._current_settings_option)
         next_option_name: str = self._current_settings_option[next_option_index].name
 
-        # Find nice colour again
-        self.set_rgb(0, 0, 255)
-
         display_string: str = f"> {current_option_name} \n {next_option_name}"
         self.text_no_refresh(display_string)
 
@@ -159,8 +156,6 @@ class Lcd:
         Returns:
             None
         """
-
-        self.set_rgb(255, 0, 0)
 
         display_string: str = f"{alert.alert_type.name}: {alert.timestamp}\n{self.cycle_through_string(alert.message)}"
         self.text_no_refresh(display_string)
