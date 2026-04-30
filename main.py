@@ -1,13 +1,33 @@
-import threading
+import time
 import traceback
 
 from inputs import SelectButton, CycleButton
-from managers import SettingsDial, AlertManager
+from managers import AlertManager
 from outputs import Led, Fan, Lcd, Buzzer
 from sensors import Ultrasonic, Dht
 
 
+def tick_component(comp) -> None:
+    try:
+        comp.tick()
+    # TODO: also figure out error types
+    except TypeError:
+        print(f"Error while ticking {comp.__class__.__name__}")
+        raise
+
+def tick_components(components: list):
+    for comp in components:
+        tick_component(comp)
+
+
 class Main:
+    INPUT_INTERVAL = 0.02
+    ULTRASONIC_INTERVAL = 0.1
+    DHT_INTERVAL = 2.0
+    OUTPUT_INTERVAL = 0.1
+    LCD_INTERVAL = 0.25
+    LOOP_SLEEP = 0.005
+
     def __init__(self):
         self.alert_manager = AlertManager()
 
@@ -16,69 +36,73 @@ class Main:
         self.led = Led(4, self.alert_manager)
         self.fan = Fan(5, self.alert_manager)
 
-        self.settings_dial = SettingsDial()
-        self.lcd = Lcd(self.alert_manager, self.dht, self.settings_dial)
+        # This will probably error tbf but need to clean up settings dial calls
+        self.lcd = Lcd(self.alert_manager, self.dht, None)
         self.select_btn = SelectButton(6, self.lcd)
         self.cycle_btn = CycleButton(7, self.lcd)
         self.buzzer = Buzzer(8, self.alert_manager)
 
         self.input_components = [self.cycle_btn, self.select_btn]
-        self.sensor_components = [self.ultrasonic, self.dht]
-        self.output_components = [self.led, self.lcd, self.fan, self.buzzer]
-
-        self.components = self.input_components + self.sensor_components + self.output_components
-        self.threads = []
-
-        self.threads.append(threading.Thread(target=self.input_ticks))
-        self.threads.append(threading.Thread(target=self.sensor_ticks))
-        self.threads.append(threading.Thread(target=self.output_ticks))
+        self.output_components = [self.led, self.fan, self.buzzer]
 
     def main(self):
-        self.ultrasonic.establish_baseline_distance()
-
         try:
-            for t in self.threads:
-                t.start()
-
-            for t in self.threads:
-                t.join()
-        except IOError:
-            self.lcd.clear_display()
-            traceback.print_exc()
+            self.ultrasonic.establish_baseline_distance()
+            self.run_loop()
         except KeyboardInterrupt:
-            self.lcd.clear_display()
             pass
+        # TODO: figure out what could actually appear / be raised
+        except TypeError:
+            traceback.print_exc()
+        finally:
+            self.shutdown()
 
-    def input_ticks(self) -> None:
-        print("Starting input thread")
+    def run_loop(self):
+        now = time.monotonic()
 
-        while True:
-            for comp in self.input_components:
-                comp.tick()
-
-    def output_ticks(self) -> None:
-        print("Starting output thread")
-
-        while True:
-            for comp in self.output_components:
-                comp.tick()
-
-            if self.alert_manager.total_alert != 0:
-                self.lcd.set_rgb(255, 0, 0)
-            else:
-                self.lcd.set_rgb(0, 255, 0)
-
-            print(f"Output log:\nTotal alerts: {self.alert_manager.total_alert}\n")
-
-    def sensor_ticks(self) -> None:
-        print("Starting sensor thread")
+        next_input_tick = now
+        next_ultrasonic_tick = now
+        next_dht_tick = now
+        next_output_tick = now
+        next_lcd_tick = now
 
         while True:
-            for comp in self.sensor_components:
-                comp.tick()
+            now = time.monotonic()
 
-            print(f"Sensor log:\nUltrasonic: {self.ultrasonic.get_value()}\nDHT: {self.dht.get_value()}\n")
+            if now >= next_input_tick:
+                tick_components(self.input_components)
+                next_input_tick = now + self.INPUT_INTERVAL
 
+            if now >= next_ultrasonic_tick:
+                tick_component(self.ultrasonic)
+                next_ultrasonic_tick = now + self.ULTRASONIC_INTERVAL
+
+            if now >= next_dht_tick:
+                tick_component(self.dht)
+                next_dht_tick = now + self.DHT_INTERVAL
+
+            if now >= next_output_tick:
+                tick_components(self.output_components)
+                next_output_tick = now + self.OUTPUT_INTERVAL
+
+            if now >= next_lcd_tick:
+                tick_component(self.lcd)
+                next_lcd_tick = now + self.LCD_INTERVAL
+
+            time.sleep(self.LOOP_SLEEP)
+
+    # None might not be in the Pi's python version but i think it is,
+    # if there's an error here just remove -> None
+
+    def shutdown(self):
+        try:
+            self.lcd.clear_display()
+            self.led.led_on = False
+            self.fan.set_value(0)
+            self.buzzer.sound_state = False
+        # TODO: Same thing
+        except TypeError:
+            traceback.print_exc()
 
 
 if __name__ == "__main__":

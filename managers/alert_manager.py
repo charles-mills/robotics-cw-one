@@ -1,5 +1,5 @@
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, auto
 
 import config
@@ -16,7 +16,7 @@ class Alert:
     alert_type: AlertType
     message: str
     dismissal_required: bool
-    timestamp: float = time.strftime("%H:%M", time.localtime())
+    timestamp: str = field(default_factory=lambda: time.strftime("%H:%M", time.localtime()))
 
 
 class AlertManager:
@@ -54,14 +54,13 @@ class AlertManager:
 
     def try_resolve_alerts(self, dht_temp: float, dht_humidity: float) -> None:
         """
-        checks whether current values are below the required threshold to remove alerts for temp and humidity
+        Checks whether current values are below the required threshold to remove alerts for temp and humidity
 
         """
 
-        ## CHECK THESE OUT
-        if dht_temp > config.TEMPERATURE_RESOLVE_THRESHOLD:
+        if dht_temp <= config.TEMPERATURE_RESOLVE_THRESHOLD:
             self.auto_resolve_alert(AlertType.HIGH_TEMP)
-        if dht_humidity > config.HUMIDITY_RESOLVE_THRESHOLD:
+        if dht_humidity <= config.HUMIDITY_RESOLVE_THRESHOLD:
             self.auto_resolve_alert(AlertType.HIGH_HUM)
 
     @property

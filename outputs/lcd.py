@@ -30,6 +30,12 @@ class Lcd:
         self._current_option_index: int = 0
         self._current_string_index: int = 0
 
+        # TODO: this type hint should be optional / or none but again will need to see if that works on the Pi
+        self._last_text: str = None
+
+        # TODO: find out if the Python ver supports tuple hinting
+        self._last_rgb = None
+
         self.alert_manager: AlertManager = alert_manager
         self.dht: Dht = dht
         self.settings_dial: SettingsDial = settings_dial
@@ -42,12 +48,16 @@ class Lcd:
             self.bus = smbus.SMBus(0)
 
     def set_rgb(self, r: int, g: int, b: int) -> None:
+        if self._last_rgb == (r, g, b):
+            return
+
         self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 0, 0)
         self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 1, 0)
         self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 0x08, 0xaa)
         self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 4, r)
         self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 3, g)
         self.bus.write_byte_data(self.DISPLAY_RGB_ADDR, 2, b)
+        self._last_rgb = (r, g, b)
 
     # Don't think these are needed for the LCD
     # def get_value(self) -> int:
@@ -70,6 +80,7 @@ class Lcd:
 
     def clear_display(self) -> bool:
         self.text_command(0x01)
+        self._last_text = None
         self.set_rgb(0, 0, 0)
         return True
 
@@ -85,6 +96,12 @@ class Lcd:
             None
         """
 
+        while len(text) < 32:
+            text += ' '
+
+        if self._last_text == text:
+            return
+
         self.text_command(0x02)
         time.sleep(0.05)
         self.text_command(0x08 | 0x04)
@@ -93,9 +110,6 @@ class Lcd:
 
         count: int = 0
         row: int = 0
-
-        while len(text) < 32:
-            text += ' '
 
         for c in text:
             if c == '\n' or count == 16:
@@ -113,6 +127,8 @@ class Lcd:
 
             count += 1
             self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
+
+        self._last_text = text
 
     def render_dashboard(self, temp: float, humidity: float) -> None:
         """
@@ -214,8 +230,13 @@ class Lcd:
             elif self.lcd_state == LcdState.ALERT:
                 self.lcd_state = LcdState.DASHBOARD
         else:
-            self.alert_manager.try_resolve_alerts(self.dht._temp, self.dht._humidity)
+            self.alert_manager.try_resolve_alerts(self.dht.temp, self.dht.humidity)
             self.render_alert_notification(self.alert_manager.current_alert)
+
+        if self.alert_manager.total_alert != 0:
+            self.set_rgb(255, 0, 0)
+        else:
+            self.set_rgb(0, 255, 0)
 
     def next_setting(self) -> None:
         self._current_option_index = (self._current_option_index + 1) % len(self._current_settings_option)

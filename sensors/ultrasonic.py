@@ -19,7 +19,6 @@ class Ultrasonic:
             port: GrovePi port the sensor is connected to.
 
         """
-        grovepi.set_bus("RPI_1")
         self.port: int = port
         self.baseline: float = -1.0
         self.alert_manager: AlertManager = alert_manager

@@ -6,7 +6,6 @@ from managers import AlertManager, AlertType
 
 class Dht:
     def __init__(self, port: int, alert_manager: AlertManager):
-        grovepi.set_bus("RPI_1")
         self.port: int = port
         self.type: int = 0
         self.alert_manager: AlertManager = alert_manager

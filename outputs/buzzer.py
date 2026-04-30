@@ -2,7 +2,6 @@ import config
 import grovepi
 
 from managers import AlertManager
-from managers.alert_manager import Alert, AlertType
 
 class Buzzer:
 

@@ -7,7 +7,7 @@ class Fan:
         self.port: int = port
         self.alert_manager: AlertManager = alert_manager
         self.power: int = 0
-        grovepi.pinMode(self.port, self.power)
+        grovepi.pinMode(self.port, "OUTPUT")
 
     def tick(self):
         if self.alert_manager.has_alert_type(AlertType.HIGH_TEMP):
