@@ -108,25 +108,24 @@ class Lcd:
         self.text_command(0x28)
         time.sleep(0.05)
 
+        lines: list[str] = text.split('\n')
+
+        if len(lines) == 1:
+            lines.append("")
+
+        line1: str = lines[0].ljust(16, ' ')[:16]
+        line2: str = lines[1].ljust(16, ' ')[:16]
+
+        new_text: str = line1 + line2
+
         count: int = 0
-        row: int = 0
 
-        for c in text:
-            if c == '\n' or count == 16:
-                count = 0
-
-                row += 1
-
-                if row == 2:
-                    break
-
+        for c in new_text:
+            if count == 16:
                 self.text_command(0xc0)
-
-                if c == '\n':
-                    continue
-
-            count += 1
+            
             self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
+            count += 1
 
         self._last_text = text
 
@@ -236,7 +235,7 @@ class Lcd:
         if self.alert_manager.total_alert != 0:
             self.set_rgb(255, 0, 0)
         else:
-            self.set_rgb(0, 255, 0)
+            self.set_rgb(54, 224, 148)
 
     def next_setting(self) -> None:
         self._current_option_index = (self._current_option_index + 1) % len(self._current_settings_option)
