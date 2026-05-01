@@ -15,7 +15,7 @@ class LcdState(Enum):
 
 
 class SettingsOption(Enum):
-    OPTION1 = auto()
+    DASHBOARD = auto()
     OPTION2 = auto()
     OPTION3 = auto()
 
@@ -35,6 +35,8 @@ class Lcd:
 
         # TODO: find out if the Python ver supports tuple hinting
         self._last_rgb = None
+
+        self._last_select_click: float = 0.0
 
         self.alert_manager: AlertManager = alert_manager
         self.dht: Dht = dht
@@ -199,11 +201,21 @@ class Lcd:
             self._lcd_state = LcdState.DASHBOARD
 
     def select(self) -> None:
+        current_time: float = time.monotonic()
+        time_since_last_click: float = current_time - self._last_select_click
+        self._last_select_click = current_time
 
         if self.alert_manager.total_alert > 0:
             self.alert_manager.dismiss_alert()
         elif self._lcd_state == LcdState.SETTINGS:
-            pass
+            if time_since_last_click < 0.8:
+                self.next_setting()
+                self._last_select_click = 0.0
+            else:
+                if self.current_settings_option.name == "DASHBOARD":
+                    self.lcd_state = LcdState.DASHBOARD
+                else:
+                    pass
 
     def tick(self):
         if len(self.alert_manager.active_alerts) == 0:
@@ -217,13 +229,6 @@ class Lcd:
                     self.lcd_state_timer = self.lcd_state_timer - 1
                 else:
                     self.lcd_state_timer = 4
-                    rotation_value: int = self.settings_dial.get_rotation()
-
-                    if rotation_value == 1:
-                        self.next_setting()
-                    elif rotation_value == -1:
-                        self.previous_setting()
-
                     self.render_settings_option()
 
             elif self.lcd_state == LcdState.ALERT:
