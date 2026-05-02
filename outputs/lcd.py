@@ -198,24 +198,19 @@ class Lcd:
         if self._lcd_state == LcdState.DASHBOARD:
             self._lcd_state = LcdState.SETTINGS
         elif self._lcd_state == LcdState.SETTINGS:
-            self._lcd_state = LcdState.DASHBOARD
+            self.next_setting()
 
     def select(self) -> None:
-        current_time: float = time.monotonic()
-        time_since_last_click: float = current_time - self._last_select_click
-        self._last_select_click = current_time
 
         if self.alert_manager.total_alert > 0:
             self.alert_manager.dismiss_alert()
+
         elif self._lcd_state == LcdState.SETTINGS:
-            if time_since_last_click < 0.8:
-                self.next_setting()
-                self._last_select_click = 0.0
+
+            if self.current_settings_option.name == "DASHBOARD":
+                self.lcd_state = LcdState.DASHBOARD
             else:
-                if self.current_settings_option.name == "DASHBOARD":
-                    self.lcd_state = LcdState.DASHBOARD
-                else:
-                    pass
+                pass
 
     def tick(self):
         if len(self.alert_manager.active_alerts) == 0:
