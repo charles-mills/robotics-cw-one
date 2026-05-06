@@ -4,3 +4,5 @@ HIGH_TEMP_C: float = 26
 HIGH_HUMIDITY_PERCENT: float = 60
 TEMPERATURE_RESOLVE_THRESHOLD: float = 25
 HUMIDITY_RESOLVE_THRESHOLD: float = 55.0
+
+NTFY_URL: str = "https://notifs.charlesmills.tech/qvllncV7GhPceiwa"

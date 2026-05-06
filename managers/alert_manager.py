@@ -1,9 +1,9 @@
 import time
+import requests
 from dataclasses import dataclass, field
 from enum import Enum, auto
 
 import config
-
 
 class AlertType(Enum):
     MOTION = auto()
@@ -17,6 +17,22 @@ class Alert:
     message: str
     dismissal_required: bool
     timestamp: str = field(default_factory=lambda: time.strftime("%H:%M", time.localtime()))
+
+
+def _push_alert(alert: Alert) -> bool:
+    try:
+        requests.post(config.NTFY_URL, data=alert.message.encode("utf-8"), headers=
+        {
+            "Title": f"Security System: {alert.alert_type.name}",
+            "Priority": "5",
+            "Tags": "warning",
+        },
+        timeout=5
+        )
+        return True
+    except requests.RequestException as e:
+        print(f"Failed to push alert: {e}")
+        return False
 
 
 class AlertManager:
@@ -41,6 +57,7 @@ class AlertManager:
 
         new_alert = Alert(alert_type, message, dismissal_required)
         self._active_alerts.insert(0, new_alert)
+        _push_alert(new_alert)
 
     def auto_resolve_alert(self, alert_type: AlertType) -> None:
         """ 
