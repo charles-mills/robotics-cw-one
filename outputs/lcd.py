@@ -19,8 +19,9 @@ class SettingsOption(Enum):
     OPTION2 = auto()
     OPTION3 = auto()
 
+
 class Lcd:
-    def __init__(self, alert_manager: AlertManager, dht: Dht) -> None:
+    def __init__(self, alert_manager: AlertManager, dht: Dht, settings_dial: SettingsDial) -> None:
         self.DISPLAY_RGB_ADDR: int = 0x62
         self.DISPLAY_TEXT_ADDR: int = 0x3e
         self._lcd_state: LcdState = LcdState.DASHBOARD
@@ -39,6 +40,7 @@ class Lcd:
 
         self.alert_manager: AlertManager = alert_manager
         self.dht: Dht = dht
+        self.settings_dial: SettingsDial = settings_dial
 
         rev = GPIO.RPI_REVISION
 
@@ -72,7 +74,7 @@ class Lcd:
 
         Args:
             cmd (int): The hexadecimal command code that needs to be executed.
-        
+
         Returns:
             None
         """
@@ -123,7 +125,7 @@ class Lcd:
         for c in new_text:
             if count == 16:
                 self.text_command(0xc0)
-            
+
             self.bus.write_byte_data(self.DISPLAY_TEXT_ADDR, 0x40, ord(c))
             count += 1
 
@@ -131,7 +133,7 @@ class Lcd:
 
     def render_dashboard(self, temp: float, humidity: float) -> None:
         """
-        Formats and displays the different components in the dashboard. 
+        Formats and displays the different components in the dashboard.
 
         Args:
             temp (float): The current temperature.
@@ -210,35 +212,30 @@ class Lcd:
             else:
                 pass
 
-    def handle_alerts_if_any(self) -> bool:
-        if len(self.alert_manager.active_alerts) < 0:
-            return False
-
-        self.alert_manager.try_resolve_alerts(self.dht.temp, self.dht.humidity)
-        self.render_alert_notification(self.alert_manager.current_alert)
-        self.set_rgb(255, 0, 0)
-
-        return True
-
     def tick(self):
-        if self.handle_alerts_if_any():
-            return
-
-        # TODO: can rework this with a proper stack for menus
-        match self.lcd_state:
-            case LcdState.DASHBOARD:
+        if len(self.alert_manager.active_alerts) == 0:
+            if self.lcd_state == LcdState.DASHBOARD:
                 self.lcd_state_timer = 4
+                # Should we be using parameters here? It's all internal
                 self.render_dashboard(self.dht.temp, self.dht.humidity)
-            case LcdState.SETTINGS:
+
+            elif self.lcd_state == LcdState.SETTINGS:
                 if self.lcd_state_timer > 0:
                     self.lcd_state_timer = self.lcd_state_timer - 1
                 else:
-                    self.lcd_state_timer =4
-                    self.render_dashboard(self.dht.temp, self.dht.humidity)
-            case LcdState.ALERT:
-                self.lcd_state = LcdState.DASHBOARD
+                    self.lcd_state_timer = 4
+                    self.render_settings_option()
 
-        self.set_rgb(54, 224, 148)
+            elif self.lcd_state == LcdState.ALERT:
+                self.lcd_state = LcdState.DASHBOARD
+        else:
+            self.alert_manager.try_resolve_alerts(self.dht.temp, self.dht.humidity)
+            self.render_alert_notification(self.alert_manager.current_alert)
+
+        if self.alert_manager.total_alert != 0:
+            self.set_rgb(255, 0, 0)
+        else:
+            self.set_rgb(54, 224, 148)
 
     def next_setting(self) -> None:
         self._current_option_index = (self._current_option_index + 1) % len(self._current_settings_option)
