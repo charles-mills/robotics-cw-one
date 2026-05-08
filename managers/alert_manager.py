@@ -9,7 +9,14 @@ class AlertType(Enum):
     MOTION = auto()
     HIGH_TEMP = auto()
     HIGH_HUM = auto()
+    ANY = auto()
 
+LastNotification = {
+    AlertType.MOTION: 0.0,
+    AlertType.HIGH_TEMP: 0.0,
+    AlertType.HIGH_HUM: 0.0,
+    AlertType.ANY: 0.0,
+}
 
 @dataclass
 class Alert:
@@ -20,6 +27,15 @@ class Alert:
 
 
 def _push_alert(alert: Alert) -> bool:
+    now = time.monotonic()
+
+    if now - LastNotification[alert.alert_type] < config.NOTIFICATION_COOLDOWN:
+        return False
+
+    # ANY is currently unused but can add a path for this
+    LastNotification[alert.alert_type] = now
+    LastNotification[AlertType.ANY] = now
+
     try:
         requests.post(config.NTFY_URL, data=alert.message.encode("utf-8"), headers=
         {

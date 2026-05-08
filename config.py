@@ -6,3 +6,4 @@ TEMPERATURE_RESOLVE_THRESHOLD: float = 25
 HUMIDITY_RESOLVE_THRESHOLD: float = 55.0
 
 NTFY_URL: str = "https://notifs.charlesmills.tech/qvllncV7GhPceiwa"
+NOTIFICATION_COOLDOWN: int = 30
