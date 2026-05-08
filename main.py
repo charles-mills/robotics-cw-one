@@ -1,5 +1,7 @@
 import time
 import traceback
+import paho.mqtt.publish as publish
+import grovepi
 
 from inputs import SelectButton, CycleButton
 from managers import AlertManager
@@ -7,12 +9,12 @@ from outputs import Led, Fan, Lcd, Buzzer
 from sensors import Ultrasonic, Dht
 
 
-def tick_component(comp) -> None:
+def tick_component(comp):
     try:
         comp.tick()
     # TODO: also figure out error types
     except TypeError:
-        print(f"Error while ticking {comp.__class__.__name__}")
+        print(f"Error while ticking")
         raise
 
 def tick_components(components: list):
@@ -26,6 +28,7 @@ class Main:
     DHT_INTERVAL = 2.0
     OUTPUT_INTERVAL = 0.1
     LCD_INTERVAL = 0.25
+    PUBLISH_INTERVAL = 0.1
     LOOP_SLEEP = 0.005
 
     def __init__(self):
@@ -44,6 +47,8 @@ class Main:
 
         self.input_components = [self.cycle_btn, self.select_btn]
         self.output_components = [self.led, self.fan, self.buzzer]
+
+        grovepi.set_bus("RPI_1")
 
     def main(self):
         try:
@@ -65,6 +70,7 @@ class Main:
         next_dht_tick = now
         next_output_tick = now
         next_lcd_tick = now
+        next_publish_tick = now
 
         while True:
             now = time.monotonic()
@@ -89,10 +95,11 @@ class Main:
                 tick_component(self.lcd)
                 next_lcd_tick = now + self.LCD_INTERVAL
 
-            time.sleep(self.LOOP_SLEEP)
+            if now >= next_publish_tick:
+                # publish.single("MY_TUR", 1.0)
+                publish.single("MY_VEL", 1.0)
 
-    # None might not be in the Pi's python version but i think it is,
-    # if there's an error here just remove -> None
+            time.sleep(self.LOOP_SLEEP)
 
     def shutdown(self):
         try:

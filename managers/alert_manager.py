@@ -32,9 +32,10 @@ def _push_alert(alert: Alert) -> bool:
     if now - LastNotification[alert.alert_type] < config.NOTIFICATION_COOLDOWN:
         return False
 
-    # ANY is currently unused but can add a path for this
-    LastNotification[alert.alert_type] = now
-    LastNotification[AlertType.ANY] = now
+    if now - LastNotification[AlertType.ANY] < config.NOTIFICATION_GLOBAL_COOLDOWN:
+        return False
+
+    LastNotification[alert.alert_type], LastNotification[AlertType.ANY] = now
 
     try:
         requests.post(config.NTFY_URL, data=alert.message.encode("utf-8"), headers=

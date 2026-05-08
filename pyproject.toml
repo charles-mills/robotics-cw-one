@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "paho-mqtt>=2.1.0",
     "requests>=2.33.1",
     "ruff>=0.15.10",
 ]
