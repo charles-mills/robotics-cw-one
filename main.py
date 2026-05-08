@@ -2,12 +2,23 @@ import time
 import traceback
 import paho.mqtt.publish as publish
 import grovepi
+from sympy import Point
 
 from inputs import SelectButton, CycleButton
 from managers import AlertManager
 from outputs import Led, Fan, Lcd, Buzzer
 from sensors import Ultrasonic, Dht
 
+positions = [
+    Point(-0.438, 0.125, 0.0025),
+    Point(1.07, 0.164, 0.0025),
+    Point(3.2, 0.0562, 0.0025),
+    Point(2.47, 2.26, 0.0025),
+    Point(3.48, 2.92, 0.0025),
+    Point(1.1, 1.67, 0.0025),
+    Point(0.425, 1.66, -0.00137),
+    Point(0.553, 2.87, 0.00247)
+]
 
 def tick_component(comp):
     try:
@@ -97,7 +108,7 @@ class Main:
 
             if now >= next_publish_tick:
                 # publish.single("MY_TUR", 1.0)
-                publish.single("MY_VEL", 1.0)
+                publish.single("target_point", positions[0])
 
             time.sleep(self.LOOP_SLEEP)
 

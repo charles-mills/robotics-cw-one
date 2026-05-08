@@ -8,6 +8,7 @@ dependencies = [
     "paho-mqtt>=2.1.0",
     "requests>=2.33.1",
     "ruff>=0.15.10",
+    "sympy>=1.14.0",
 ]
 
 [dependency-groups]
