@@ -24,6 +24,23 @@ class Ultrasonic:
         self.alert_manager: AlertManager = alert_manager
         self._detection_timer: float = 0.0
         self._currently_detected: bool = False
+        self.enabled: bool = True
+
+    def reconfigure(self) -> None:
+        self.establish_baseline_distance()
+        self._currently_detected = False
+        self._detection_timer = 0.0
+        self.alert_manager.auto_resolve_alert(AlertType.MOTION)
+
+    def toggle_enabled(self) -> bool:
+        self.enabled = not self.enabled
+        self._currently_detected = False
+        self._detection_timer = 0.0
+
+        if not self.enabled:
+            self.alert_manager.auto_resolve_alert(AlertType.MOTION)
+
+        return self.enabled
 
     def establish_baseline_distance(self, seconds_to_read_for: float = 5.0) -> bool:
         """
@@ -71,6 +88,9 @@ class Ultrasonic:
         return self.get_value() < (self.baseline - 5.0)
 
     def tick(self) -> None:
+        if not self.enabled:
+            return
+
         if self.is_detected():
             if not self._currently_detected:
                 self._currently_detected = True

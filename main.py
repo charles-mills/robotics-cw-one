@@ -51,7 +51,7 @@ class Main:
         self.fan = Fan(5, self.alert_manager)
 
         # This will probably error tbf but need to clean up settings dial calls
-        self.lcd = Lcd(self.alert_manager, self.dht, None)
+        self.lcd = Lcd(self.alert_manager, self.dht, self.ultrasonic)
         self.select_btn = SelectButton(6, self.lcd)
         self.cycle_btn = CycleButton(7, self.lcd)
         self.buzzer = Buzzer(8, self.alert_manager)

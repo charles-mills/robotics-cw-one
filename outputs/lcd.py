@@ -3,9 +3,9 @@ from enum import Enum, auto
 
 import RPi.GPIO as GPIO
 import smbus
-from managers import AlertManager, SettingsDial
+from managers import AlertManager
 from managers.alert_manager import Alert
-from sensors import Dht
+from sensors import Dht, Ultrasonic
 
 
 class LcdState(Enum):
@@ -15,13 +15,13 @@ class LcdState(Enum):
 
 
 class SettingsOption(Enum):
+    RECONFIGURE_ULTRASONIC = auto()
+    TOGGLE_ULTRASONIC = auto()
     DASHBOARD = auto()
-    OPTION2 = auto()
-    OPTION3 = auto()
 
 
 class Lcd:
-    def __init__(self, alert_manager: AlertManager, dht: Dht, settings_dial: SettingsDial) -> None:
+    def __init__(self, alert_manager: AlertManager, dht: Dht, ultrasonic: Ultrasonic) -> None:
         self.DISPLAY_RGB_ADDR: int = 0x62
         self.DISPLAY_TEXT_ADDR: int = 0x3e
         self._lcd_state: LcdState = LcdState.DASHBOARD
@@ -40,7 +40,7 @@ class Lcd:
 
         self.alert_manager: AlertManager = alert_manager
         self.dht: Dht = dht
-        self.settings_dial: SettingsDial = settings_dial
+        self.ultrasonic: Ultrasonic = ultrasonic
 
         rev = GPIO.RPI_REVISION
 
@@ -146,6 +146,14 @@ class Lcd:
         display_string: str = f"Temp:{temp:.1f}C \n Hum:{humidity:.0f}%"
         self.text_no_refresh(display_string)
 
+    def _settings_label(self, option: SettingsOption) -> str:
+        if option == SettingsOption.RECONFIGURE_ULTRASONIC:
+            return "Reconfigure ultrasonic"
+        if option == SettingsOption.TOGGLE_ULTRASONIC:
+            return "Disable ultrasonic" if self.ultrasonic.enabled else "Enable ultrasonic"
+
+        return "Dashboard"
+
     def render_settings_option(self) -> None:
         """
         Formats the settings options where it renders a 2 scrolling settings menu.
@@ -155,12 +163,13 @@ class Lcd:
             None
         """
 
-        current_option_name: str = self.current_settings_option.name
-
+        current_option: str = self._settings_label(self.current_settings_option)
         next_option_index: int = (self._current_option_index + 1) % len(self._current_settings_option)
-        next_option_name: str = self._current_settings_option[next_option_index].name
 
-        display_string: str = f"> {current_option_name} \n {next_option_name}"
+        # TODO: current settings option shouldnt be called that surely
+        next_option: str = self._settings_label(self._current_settings_option[next_option_index])
+
+        display_string: str = f"> {current_option} \n {next_option}"
         self.text_no_refresh(display_string)
 
     def render_alert_notification(self, alert: Alert) -> None:
@@ -196,21 +205,31 @@ class Lcd:
 
     def cycle_states(self) -> None:
         if self._lcd_state == LcdState.DASHBOARD:
+            self._current_option_index = 0
             self._lcd_state = LcdState.SETTINGS
         elif self._lcd_state == LcdState.SETTINGS:
             self.next_setting()
 
     def select(self) -> None:
-
         if self.alert_manager.total_alert > 0:
             self.alert_manager.dismiss_alert()
+            return
 
-        elif self._lcd_state == LcdState.SETTINGS:
+        if self._lcd_state != LcdState.SETTINGS:
+            return
 
-            if self.current_settings_option.name == "DASHBOARD":
-                self.lcd_state = LcdState.DASHBOARD
-            else:
-                pass
+        option = self.current_settings_option
+
+        if option == SettingsOption.RECONFIGURE_ULTRASONIC:
+            # maybe too long?
+            self.text_no_refresh("Reconfiguring...\nKeep clear from sensor")
+            self.ultrasonic.reconfigure()
+            self.lcd_state = LcdState.DASHBOARD
+        elif option == SettingsOption.TOGGLE_ULTRASONIC:
+            self.ultrasonic.toggle_enabled()
+            self.render_settings_option()
+        elif option == SettingsOption.DASHBOARD:
+            self.lcd_state = LcdState.DASHBOARD
 
     def tick(self):
         if len(self.alert_manager.active_alerts) == 0:
@@ -220,6 +239,7 @@ class Lcd:
                 self.render_dashboard(self.dht.temp, self.dht.humidity)
 
             elif self.lcd_state == LcdState.SETTINGS:
+                self.render_settings_option()
                 if self.lcd_state_timer > 0:
                     self.lcd_state_timer = self.lcd_state_timer - 1
                 else:
