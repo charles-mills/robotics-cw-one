@@ -27,12 +27,24 @@ class Ultrasonic:
         self.enabled: bool = True
 
     def reconfigure(self) -> None:
+        """
+        Makes the sensors to recalculate its baseline distance and resets all active detection timers.
+        Also, it resolves any active motion alerts in the system.
+        """
+
         self.establish_baseline_distance()
         self._currently_detected = False
         self._detection_timer = 0.0
         self.alert_manager.auto_resolve_alert(AlertType.MOTION)
 
     def toggle_enabled(self) -> bool:
+        """
+        Toggles the active state of the ultrasonic sensor.
+        If it is disabled then it resets detection timers and clears any active motion alerts.
+
+        Returns:
+            bool: New enabled state of the sensor.
+        """
         self.enabled = not self.enabled
         self._currently_detected = False
         self._detection_timer = 0.0
@@ -88,6 +100,11 @@ class Ultrasonic:
         return self.get_value() < (self.baseline - 5.0)
 
     def tick(self) -> None:
+        """
+        The main loop for the sensor. If enabled, it checks for motion.
+        If motion is deteced continuously for more than 0.3 seconds it then triggers a motion alert.
+        """
+        
         if not self.enabled:
             return
 

@@ -27,6 +27,16 @@ class Alert:
 
 
 def _push_alert(alert: Alert) -> bool:
+    """
+    Sends a push notification using HTTP POST request using the NTFY service.
+    It applies a cooldown timer to prevent spamming notifications for the same alert type.
+
+    args:
+        alert (Alert): The alert object containing the message and type to be sent.
+
+    Returns:
+        bool: True if the notification was successfully sent, False if if it was blocked.
+    """
     now = time.monotonic()
 
     if now - LastNotification[alert.alert_type] < config.NOTIFICATION_COOLDOWN:
@@ -99,6 +109,12 @@ class AlertManager:
 
     @property
     def current_alert(self) -> Alert:
+        """
+        Retrieves the most recent active alert because new alerts are inserted at the beginning of the list.
+
+        Returns:
+            Alert: The current active alert object, or None if there are no active alerts.
+        """
         if self._active_alerts:
             return self._active_alerts[0]
 
@@ -106,9 +122,24 @@ class AlertManager:
 
     @property
     def total_alert(self) -> int:
+        """
+        Calculates the total number of currently active alerts.
+
+        Returns:
+            int: The count of active alerts.
+        """
         return len(self._active_alerts)
 
     def has_alert_type(self, alert_type: AlertType) -> bool:
+        """
+        Checks if a specific type of alert is currently active in the system.
+
+        Args:
+            alert_type (AlertType): The specific AlertType enum to search for.
+
+        Returns:
+            bool: True if the alert type is currently active, False otherwise.
+        """
         for alert in self._active_alerts:
             if alert.alert_type == alert_type:
                 return True
@@ -132,4 +163,10 @@ class AlertManager:
 
     @property
     def active_alerts(self):
+        """
+        Retrieves the full list of currently active alerts.
+
+        Returns:
+            list[Alert]: A list containing all active Alert objects. 
+        """
         return self._active_alerts

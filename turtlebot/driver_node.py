@@ -7,7 +7,6 @@ from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Vector3
 import time
 import math
-import json
 import rclpy
 from rclpy.action import ActionClient
 from rclpy.node import Node
@@ -17,18 +16,14 @@ import re
 
 BROKER_IP = "10.250.6.18"
 
-#This is our ROS Node
+
 class driver_node(Node):
     
     def __init__(self):
         super().__init__('driver_node')
         
-        # Create a publisher on 'cmd_vel'
-        #self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
+
         self.publisher_ = self.create_publisher(Point, '/target_point', 10)
-        ### Storing our most recent message
-        #self.vel_msg = 0.0
-        #self.tur_msg = 0.0
         self.poi_msg = Point()
         self.pt = Point()
         self.x = 1.0
@@ -39,20 +34,22 @@ class driver_node(Node):
         pointClient.connect(BROKER_IP, 1883, 60)  
         pointClient.subscribe("MY_TAR")
         pointClient.loop_start()
-        
-        # This will run every 0.5 seconds, sending the robot a new
-        # Movement command.
         timer_period = 0.5
         self.timer = self.create_timer(timer_period, self.timer_callback)
         
     def on_point_message(self,client, userdata, msg):
-        print(msg.payload)
-        #self.poi_msg = Point(msg.payload)
-        
+        """
+        This is triggered whenever a new message is published to the "MY_TAR" topic. 
+        It parses the raw payload into X, Y and Z floats.
+
+        Args:
+            client (_type_): The MQTT client instance.
+            userdata (_type_): User data.
+            msg (_type_): MQTT message containing the payload and topic.
+        """
         st = str(msg.payload)
         st = st[2:-1]
-        print(st)
-        
+
         split = [float(x.strip()) for x in st.split(",")]
         self.pt.x = split[0]
         self.pt.y = split[1]

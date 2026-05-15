@@ -45,4 +45,9 @@ class Buzzer:
 
     
     def tick(self):
+        """
+        Periodically checks the system state to update the buzzer.
+        If there are 1 or more active alerts in the system it then turns the buzzer on.
+        However, if there are 0 alerts then the buzzer is turned off.
+        """
         self.sound_state = self.alert_manager.total_alert > 0

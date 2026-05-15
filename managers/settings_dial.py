@@ -5,7 +5,6 @@ class SettingsDial:
 
     def __init__(self):
 
-        # Assumes that the port is D2. Should use D2 since rotary motor requires two ports and D2 is the recommended port
         grovepi.encoder_en()
 
         self.last_position: int = grovepi.encoderRead()
